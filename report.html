@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report School Condition | School Infrastructure Monitoring</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="report.css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 350px;
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo.png" alt="logo">
+      <h2>विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">मुखपृष्ठ</a></li>
+        <li><a href="school.html">स्कूल स्थिति</a></li>
+        <li><a href="report.html" class="active">रिपोर्ट</a></li>
+        <li><a href="contact.html">संपर्क करें</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Report Section -->
+  <section class="report-section">
+    <h1>स्कूल की स्थिति की रिपोर्ट करें</h1>
+    <p>कृपया नीचे दिए गए विवरण भरें ताकि सरकार स्थिति की जांच कर सके।</p>
+
+    <form id="reportForm">
+      <label for="name">आपका नाम:</label>
+      <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required>
+
+      <label for="school">स्कूल का नाम:</label>
+      <input type="text" id="school" placeholder="स्कूल का नाम दर्ज करें" required>
+
+      <label for="details">विवरण:</label>
+      <textarea id="details" rows="4" placeholder="स्कूल की स्थिति का विवरण दर्ज करें..." required></textarea>
+
+      <label for="photo">तस्वीर अपलोड करें:</label>
+      <input type="file" id="photo" accept="image/*" required>
+
+      <label for="location">स्थान जोड़ें:</label>
+      <div id="map"></div>
+
+      <label>Latitude:</label>
+      <input type="text" id="latitude" readonly>
+
+      <label>Longitude:</label>
+      <input type="text" id="longitude" readonly>
+
+      <button type="submit">रिपोर्ट सबमिट करें</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative</p>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([26.8467, 80.9462], 6); // Default: Uttar Pradesh
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+
+    // Add marker on click
+    map.on('click', function(e) {
+      if (marker) map.removeLayer(marker);
+      marker = L.marker(e.latlng).addTo(map);
+      document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+      document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+    });
+  </script>
+</body>
+</html>
