@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report School Condition | School Infrastructure Monitoring</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for aesthetics -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        /* Custom styles for font and layout */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', 'Hind Siliguri', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .navbar {
+            background-color: #1e3a8a; /* Deep Indigo */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Map and Webcam Styling */
+        #map {
+            height: 350px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        #video-stream {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 0 auto;
+            display: block;
+            background-color: #000;
+        }
+        
+        /* Hidden canvas for image capture */
+        #capture-canvas {
+            display: none;
+        }
+    </style>
+</head>
+<!-- Removed startWebcam() from onload. It will now be triggered by a button click. -->
+<body onload="lucide.createIcons();">
+
+    <!-- Header -->
+    <header class="navbar p-4 text-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="logo flex items-center mb-4 md:mb-0">
+                <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+                <h2 class="text-xl font-bold font-['Hind Siliguri']">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+            </div>
+            <nav>
+                <ul class="flex space-x-4 md:space-x-8 text-sm md:text-base font-medium">
+                    <li><a href="index.html" class="hover:text-yellow-300 transition duration-150">मुखपृष्ठ</a></li>
+                    <li><a href="status.html" class="hover:text-yellow-300 transition duration-150">स्कूल स्थिति</a></li>
+                    <li><a href="report.html" class="hover:text-yellow-300 transition duration-150 font-bold border-b-2 border-yellow-300">रिपोर्ट</a></li>
+                    <li><a href="contact.html" class="hover:text-yellow-300 transition duration-150">संपर्क करें</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Report Section -->
+    <section class="max-w-3xl mx-auto p-6 md:p-8 bg-white my-10 rounded-xl shadow-2xl">
+        <h1 class="text-3xl font-extrabold text-indigo-700 mb-2">स्कूल की स्थिति की रिपोर्ट करें</h1>
+        <p class="text-gray-600 mb-6">कृपया नीचे दिए गए विवरण भरें ताकि सरकार स्थिति की जांच कर सके।</p>
+
+        <form id="reportForm" class="space-y-4">
+            <!-- User Info -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">आपका नाम:</label>
+                <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label for="school" class="block text-sm font-medium text-gray-700 mb-1">स्कूल का नाम:</label>
+                <input type="text" id="school" placeholder="स्कूल का नाम दर्ज करें" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label for="details" class="block text-sm font-medium text-gray-700 mb-1">विवरण (समस्या की जानकारी):</label>
+                <textarea id="details" rows="4" placeholder="स्कूल की स्थिति का विवरण दर्ज करें..." required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+
+            <!-- Webcam Capture Section (REPLACED FILE INPUT) -->
+            <div class="pt-4 border-t border-gray-200">
+                <label class="block text-sm font-bold text-gray-700 mb-2">लाइव तस्वीर कैप्चर करें (शिकायत के लिए):</label>
+                
+                <div class="webcam-container p-4 bg-gray-100 rounded-xl mb-4 text-center border-4 border-dashed border-gray-300">
+                    
+                    <!-- Initial State: Start Camera Prompt -->
+                    <div id="initial-webcam-prompt">
+                        <p class="text-base text-gray-700 font-medium mb-3">शिकायत के लिए स्कूल की स्थिति की लाइव तस्वीर लेने के लिए कैमरा शुरू करें।</p>
+                        <button type="button" id="startWebcamBtn" class="py-2 px-5 bg-indigo-600 text-white font-bold rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 flex items-center justify-center mx-auto">
+                            <i data-lucide="video" class="w-5 h-5 mr-2"></i> कैमरा शुरू करें
+                        </button>
+                    </div>
+
+                    <!-- Video Stream (Hidden initially) -->
+                    <video id="video-stream" autoplay playsinline class="hidden"></video>
+                    <!-- Canvas (Hidden) -->
+                    <canvas id="capture-canvas"></canvas>
+
+                    <!-- Capture Status (Hidden initially) -->
+                    <p id="capture-status" class="text-sm text-gray-600 mt-3 hidden"></p>
+                    
+                    <!-- Capture Button (Hidden initially) -->
+                    <button type="button" id="capturePhotoBtn" class="mt-3 py-2 px-5 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 transition duration-300 flex items-center justify-center mx-auto hidden">
+                        <i data-lucide="camera" class="w-5 h-5 mr-2"></i> तस्वीर कैप्चर करें
+                    </button>
+                </div>
+                
+                <!-- Image Preview Status -->
+                <div id="image-preview-status" class="hidden p-3 bg-green-100 rounded-lg border-l-4 border-green-500 text-green-800 font-semibold">
+                    तस्वीर सफलतापूर्वक कैप्चर कर ली गई है।
+                </div>
+                <!-- Hidden input to hold Base64 data -->
+                <input type="hidden" id="captured_image_data" required> 
+            </div>
+
+            <!-- Location Input -->
+            <div class="pt-4 border-t border-gray-200">
+                <label for="location" class="block text-sm font-medium text-gray-700 mb-1">स्थान जोड़ें (मानचित्र पर क्लिक करें):</label>
+                <div id="map"></div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-1">Latitude:</label>
+                <input type="text" id="latitude" readonly placeholder="मानचित्र पर क्लिक करके चुनें" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
+
+                <label class="block text-sm font-medium text-gray-700 mt-2 mb-1">Longitude:</label>
+                <input type="text" id="longitude" readonly placeholder="मानचित्र पर क्लिक करके चुनें" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-indigo-600 text-white font-bold text-lg rounded-lg shadow-xl hover:bg-indigo-700 transition duration-300 mt-6 flex items-center justify-center">
+                <i data-lucide="send" class="w-5 h-5 mr-2"></i> रिपोर्ट सबमिट करें
+            </button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="p-8 text-center bg-gray-800 text-gray-300">
+        <p class="text-sm">© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+    <script>
+        // Global Constants and References
+        const videoStream = document.getElementById('video-stream');
+        const captureCanvas = document.getElementById('capture-canvas');
+        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+        const captureStatus = document.getElementById('capture-status');
+        const capturedImageDataInput = document.getElementById('captured_image_data');
+        const imagePreviewStatus = document.getElementById('image-preview-status');
+        const reportForm = document.getElementById('reportForm');
+        // New elements
+        const startWebcamBtn = document.getElementById('startWebcamBtn');
+        const initialWebcamPrompt = document.getElementById('initial-webcam-prompt');
+        
+        let capturedImageData = null; // Stores the Base64 data of the captured photo
+        let videoStreamTrack = null; // Stores the active camera stream track
+        
+        // --- Utility Functions (Simulating alert() with a modal/message box) ---
+
+        function showMessage(title, message, type = 'error') {
+            const colors = {
+                error: 'bg-red-100 text-red-800 border-red-500',
+                success: 'bg-green-100 text-green-800 border-green-500',
+                info: 'bg-blue-100 text-blue-800 border-blue-500'
+            };
+            
+            const messageBox = document.createElement('div');
+            messageBox.className = `fixed top-5 right-5 z-50 p-4 rounded-lg border-l-4 shadow-lg ${colors[type]}`;
+            messageBox.innerHTML = `<p class="font-bold">${title}</p><p class="text-sm">${message}</p>`;
+
+            document.body.appendChild(messageBox);
+
+            setTimeout(() => messageBox.remove(), 7000);
+        }
+
+        // --- Webcam Functions ---
+
+        /**
+         * Initializes the user's webcam and starts streaming to the video element.
+         */
+        async function startWebcam() {
+            // Check if stream is already running
+            if (videoStreamTrack) return;
+
+            // Show temporary loading status
+            captureStatus.textContent = "कैमरा शुरू हो रहा है...";
+            captureStatus.classList.remove('hidden');
+            startWebcamBtn.disabled = true;
+
+            try {
+                // Prefer environment (rear) camera on mobile, but default to any camera
+                const constraints = { video: { facingMode: 'environment' }, audio: false };
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoStream.srcObject = stream;
+                videoStreamTrack = stream.getVideoTracks()[0];
+                
+                // --- UI Update on Success ---
+                initialWebcamPrompt.classList.add('hidden');
+                videoStream.classList.remove('hidden');
+                capturePhotoBtn.classList.remove('hidden');
+                
+                // Update status and enable capture button
+                captureStatus.textContent = "कैमरा तैयार है। तस्वीर कैप्चर करने के लिए क्लिक करें।";
+                capturePhotoBtn.disabled = false;
+                
+            } catch (err) {
+                console.error("Error accessing webcam: ", err);
+                // --- UI Update on Error ---
+                captureStatus.textContent = "त्रुटि: कैमरा एक्सेस नहीं किया जा सका। कृपया कैमरा अनुमति दें।";
+                startWebcamBtn.disabled = false; // Allow retrying
+                
+                // Hide capture elements and ensure prompt is visible
+                videoStream.classList.add('hidden');
+                capturePhotoBtn.classList.add('hidden');
+                initialWebcamPrompt.classList.remove('hidden'); 
+
+                showMessage("कैमरा त्रुटि", "कैमरा स्ट्रीम शुरू करने में विफल रहा। कृपया सुनिश्चित करें कि आपने कैमरा अनुमति दी है।", "error");
+            }
+        }
+
+        /**
+         * Captures the current frame from the video stream onto a canvas.
+         */
+        function capturePhoto() {
+            if (!videoStreamTrack || videoStream.paused) {
+                showMessage("कैप्चर त्रुटि", "कैमरा स्ट्रीम सक्रिय नहीं है।", "error");
+                return;
+            }
+
+            // Set canvas size to match video stream size
+            captureCanvas.width = videoStream.videoWidth;
+            captureCanvas.height = videoStream.videoHeight;
+
+            const context = captureCanvas.getContext('2d');
+            
+            // Draw the current video frame onto the canvas
+            context.drawImage(videoStream, 0, 0, captureCanvas.width, captureCanvas.height);
+
+            // Convert canvas image to Base64 (JPEG format)
+            const dataURL = captureCanvas.toDataURL('image/jpeg', 0.9);
+            // Extract only the Base64 part after the comma
+            capturedImageData = dataURL.split(',')[1]; 
+            capturedImageDataInput.value = 'Image Captured (Base64 data stored)'; // Set a value for form validation
+
+            captureStatus.textContent = "तस्वीर कैप्चर हो गई है।";
+            imagePreviewStatus.classList.remove('hidden');
+            showMessage("तस्वीर कैप्चर", "आपकी लाइव तस्वीर शिकायत के लिए तैयार है।", "success");
+        }
+
+        // --- Form Submission Handler ---
+
+        reportForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!capturedImageData) {
+                showMessage("त्रुटि", "कृपया रिपोर्ट सबमिट करने से पहले एक तस्वीर कैप्चर करें।", "error");
+                return;
+            }
+
+            // Collect all form data
+            const formData = {
+                name: document.getElementById('name').value,
+                school: document.getElementById('school').value,
+                details: document.getElementById('details').value,
+                latitude: document.getElementById('latitude').value,
+                longitude: document.getElementById('longitude').value,
+                image_base64: capturedImageData // The captured image data
+            };
+
+            // In a real application, you would send this 'formData' to a backend server or a Firestore database.
+            // For this demonstration, we just log the data and show a success message.
+            console.log("--- Complaint Data Ready for Submission ---");
+            console.log("Form Data:", { ...formData, image_base64: '...[Base64 Data Omitted for Console Log]' });
+            console.log("Base64 Image Data Length:", formData.image_base64.length);
+            
+            showMessage("रिपोर्ट सबमिट हुई", "आपकी शिकायत सफलतापूर्वक दर्ज कर ली गई है। धन्यवाद!", "success");
+
+            // You would typically reset the form here:
+            // reportForm.reset();
+            // capturedImageData = null;
+            // capturedImageDataInput.value = '';
+            // imagePreviewStatus.classList.add('hidden');
+        });
+
+        // --- Map Setup (Leaflet) ---
+        
+        // Initialize map
+        const map = L.map('map').setView([26.8467, 80.9462], 6); // Default: Uttar Pradesh
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker;
+
+        // Add marker on click
+        map.on('click', function(e) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
+            document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
+        });
+
+        // Add event listener to buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            capturePhotoBtn.addEventListener('click', capturePhoto);
+            startWebcamBtn.addEventListener('click', startWebcam); // New listener for the start button
+        });
+    </script>
+</body>
+</html>
