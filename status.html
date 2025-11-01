@@ -3,9 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>विद्यालय स्थिति | School Infrastructure Monitoring</title>
+  <title>विद्यालय स्थिति देखें | Track School Status</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="status.css">
+  <style>
+    body {
+      background-color: #f3f6fa;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+
+    .content {
+      max-width: 650px;
+      margin: 60px auto;
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #000;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 15px;
+    }
+
+    .or {
+      text-align: center;
+      color: #777;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    .captcha-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    #captchaText {
+      background-color: #000;
+      color: #00ff00;
+      font-size: 24px;
+      letter-spacing: 4px;
+      font-weight: bold;
+      padding: 8px 20px;
+      border-radius: 4px;
+      user-select: none;
+    }
+
+    #refreshBtn {
+      background: none;
+      border: none;
+      color: #0056b3;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .submit-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .reset-btn {
+      background-color: #ff9800;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover { background-color: #218838; }
+    .reset-btn:hover { background-color: #e68900; }
+
+    .status-container {
+      margin-top: 40px;
+      background-color: #eef4f9;
+      padding: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .status-card {
+      background-color: #fff;
+      padding: 15px 20px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .status-card p {
+      font-size: 16px;
+      color: #333;
+      margin: 8px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #002855;
+      color: #fff;
+      margin-top: 60px;
+    }
+  </style>
 </head>
 <body>
   <header class="navbar">
@@ -16,7 +155,7 @@
     <nav>
       <ul>
         <li><a href="index.html">मुखपृष्ठ</a></li>
-        <li><a href="school-status.html" class="active">विद्यालय स्थिति</a></li>
+        <li><a href="status.html" class="active">विद्यालय स्थिति</a></li>
         <li><a href="report.html">रिपोर्ट</a></li>
         <li><a href="contact.html">संपर्क करें</a></li>
       </ul>
@@ -25,29 +164,32 @@
 
   <section class="content">
     <h1>विद्यालय की स्थिति देखें / Track School Status</h1>
-    <p>कृपया नीचे दिए गए विवरण भरें ताकि विद्यालय की स्थिति देखी जा सके।</p>
+    <p class="note">नोट: कृपया विद्यालय कोड या जनपद नाम भरकर स्थिति देखें।</p>
 
-    <div class="form-container">
-      <form id="statusForm">
-        <label for="schoolId">विद्यालय कोड / School ID:</label>
-        <input type="text" id="schoolId" placeholder="विद्यालय कोड दर्ज करें" required>
+    <form id="statusForm">
+      <label for="schoolId">विद्यालय कोड / School ID *</label>
+      <input type="text" id="schoolId" placeholder="विद्यालय कोड दर्ज करें">
 
-        <label for="district">जनपद / District:</label>
-        <input type="text" id="district" placeholder="जनपद का नाम दर्ज करें" required>
+      <label for="district">जनपद / District *</label>
+      <input type="text" id="district" placeholder="जनपद का नाम दर्ज करें">
 
-        <label for="securityCode">सुरक्षा कोड / Security Code:</label>
-        <div class="captcha-box">
-          <span id="captchaText">814084</span>
-          <button type="button" id="refreshBtn">नया कोड</button>
-        </div>
-        <input type="text" id="captchaInput" placeholder="सुरक्षा कोड दर्ज करें" required>
+      <div class="or">OR</div>
 
-        <div class="btn-group">
-          <button type="submit" class="submit-btn">सबमिट करें</button>
-          <button type="reset" class="reset-btn">रीसेट</button>
-        </div>
-      </form>
-    </div>
+      <label for="email">ई-मेल आईडी / Email ID *</label>
+      <input type="email" id="email" placeholder="ई-मेल आईडी दर्ज करें">
+
+      <label for="captchaInput">कृपया नीचे दिए गए बॉक्स में उपलब्ध सुरक्षा कोड अंकित करें *</label>
+      <div class="captcha-box">
+        <span id="captchaText">814084</span>
+        <button type="button" id="refreshBtn">अन्य अंक प्राप्त करें</button>
+      </div>
+      <input type="text" id="captchaInput" placeholder="कैप्चा अंक दर्ज करें" required>
+
+      <div class="btn-group">
+        <button type="submit" class="submit-btn">सबमिट करें</button>
+        <button type="reset" class="reset-btn">रीसेट</button>
+      </div>
+    </form>
 
     <div class="status-container" id="statusContainer" style="display:none;">
       <h2>विद्यालय स्थिति रिपोर्ट</h2>
