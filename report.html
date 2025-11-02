@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Report School Condition | School Infrastructure Monitoring</title>
+  <title id="pageTitle">रिपोर्ट | विद्यालय अवसंरचना निगरानी प्रणाली</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="report.css">
 
@@ -20,65 +20,63 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- ✅ Header -->
   <header class="navbar">
     <div class="logo">
       <img src="logo.png" alt="logo">
-      <h2>विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+      <h2 id="navTitle">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
     </div>
     <nav>
       <ul>
-        <li><a href="index.html">मुखपृष्ठ</a></li>
-        <li><a href="status.html">स्कूल स्थिति</a></li>
-        <li><a href="report.html" class="active">रिपोर्ट</a></li>
-        <li><a href="contact.html">संपर्क करें</a></li>
+        <li><a id="navHome" href="index.html">मुखपृष्ठ</a></li>
+        <li><a id="navStatus" href="status.html">स्कूल स्थिति</a></li>
+        <li><a id="navReport" href="report.html" class="active">रिपोर्ट</a></li>
+        <li><a id="navContact" href="contact.html">संपर्क करें</a></li>
       </ul>
     </nav>
+
+    <!-- 🌐 Language selector -->
+    <select id="languageSelect" onchange="changeLanguage()">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+    </select>
   </header>
 
-  <!-- Report Section -->
+  <!-- ✅ Report Section -->
   <section class="report-section">
-    <h1>स्कूल की स्थिति की रिपोर्ट करें</h1>
-    <p>कृपया नीचे दिए गए विवरण भरें ताकि सरकार स्थिति की जांच कर सके।</p>
+    <h1 id="reportHeading">विद्यालय रिपोर्ट जमा करें</h1>
+<p id="reportDesc">अपने विद्यालय की अवसंरचना की स्थिति रिपोर्ट करने के लिए नीचे विवरण भरें।</p>
 
-    <form id="reportForm">
-      <label for="name">आपका नाम:</label>
-      <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required>
+<form class="report-form">
+  <label id="reportSchoolLabel" for="schoolNameInput">विद्यालय का नाम:</label>
+  <input type="text" id="schoolNameInput" placeholder="विद्यालय का नाम दर्ज करें" required>
 
-      <label for="school">स्कूल का नाम:</label>
-      <input type="text" id="school" placeholder="स्कूल का नाम दर्ज करें" required>
+  <label id="reportLocationLabel" for="locationInput">विद्यालय का स्थान:</label>
+  <input type="text" id="locationInput" placeholder="विद्यालय का स्थान दर्ज करें" required>
 
-      <label for="details">विवरण:</label>
-      <textarea id="details" rows="4" placeholder="स्कूल की स्थिति का विवरण दर्ज करें..." required></textarea>
+  <label id="reportConditionLabel" for="conditionInput">स्थिति का विवरण:</label>
+  <textarea id="conditionInput" rows="3" placeholder="वर्तमान स्थिति का विवरण लिखें" required></textarea>
 
-      <label for="photo">तस्वीर अपलोड करें:</label>
-      <input type="file" id="photo" accept="image/*" required>
+  <label id="reportUploadLabel" for="photoUpload">फोटो अपलोड करें:</label>
+  <input type="file" id="photoUpload" accept="image/*">
 
-      <label for="location">स्थान जोड़ें:</label>
-      <div id="map"></div>
+  <button type="submit" id="reportSubmitBtn">रिपोर्ट जमा करें</button>
+</form>
 
-      <label>Latitude:</label>
-      <input type="text" id="latitude" readonly>
-
-      <label>Longitude:</label>
-      <input type="text" id="longitude" readonly>
-
-      <button type="submit">रिपोर्ट सबमिट करें</button>
-    </form>
   </section>
 
-  <!-- Footer -->
+  <!-- ✅ Footer -->
   <footer>
-    <p>© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative</p>
+    <p>© 2025 | AI & IoT Monitoring Initiative</p>
   </footer>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Initialize map
+    // 🗺️ Initialize map
     const map = L.map('map').setView([26.8467, 80.9462], 6); // Default: Uttar Pradesh
 
-    // Add OpenStreetMap tiles
+    // 🧩 Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
@@ -86,7 +84,7 @@
 
     let marker;
 
-    // Add marker on click
+    // 📍 Add marker on map click
     map.on('click', function(e) {
       if (marker) map.removeLayer(marker);
       marker = L.marker(e.latlng).addTo(map);
@@ -94,5 +92,8 @@
       document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
     });
   </script>
+
+  <!-- Your main language script -->
+  <script src="script.js"></script>
 </body>
 </html>

@@ -8,21 +8,25 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <header class="navbar">
-    <div class="logo">
-      <img src="logo.png" alt="logo">
-      <h2>विद्यालय अवसंरचना निगरानी प्रणाली</h2>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="home.html">मुखपृष्ठ</a></li>
-        <li><a href="status.html">स्कूल स्थिति</a></li>
-        <li><a href="report.html">रिपोर्ट</a></li>
-        <li><a href="contact.html">संपर्क करें</a></li>
-      </ul>
-    </nav>
+  <div class="logo">
+    <img src="logo.png" alt="Logo" />
+    <h2 id="navTitle">School Infra Portal</h2>
+  </div>
+  <ul>
+    <li><a id="navHome" href="index.html">Home</a></li>
+    <li><a id="navStatus" href="status.html">Status</a></li>
+    <li><a id="navReport" href="report.html">Report</a></li>
+    <li><a id="navContact" href="contact.html">Contact</a></li>
+  </ul>
+
+  <!-- ✅ language dropdown visible on all pages -->
+    <select id="languageSelect" onchange="changeLanguage()">
+     <option value="en">English</option>
+     <option value="hi">हिन्दी</option>
+    </select>
   </header>
+
 
   <!-- Hero Section -->
   <section class="hero">
@@ -60,7 +64,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative</p>
+    <p>© 2025 | AI & IoT Monitoring Initiative</p>
   </footer>
 
   <script src="script.js"></script>

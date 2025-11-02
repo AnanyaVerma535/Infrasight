@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>विद्यालय स्थिति देखें | Track School Status</title>
+  <title id="statusTitle">विद्यालय स्थिति देखें | Track School Status</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="status.css">
+
   <style>
     body {
       background-color: #f3f6fa;
@@ -147,38 +148,46 @@
   </style>
 </head>
 <body>
+  <!-- 🌐 Navbar -->
   <header class="navbar">
     <div class="logo">
       <img src="logo.png" alt="logo">
-      <h2>विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+      <h2 id="navTitle">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
     </div>
     <nav>
       <ul>
-        <li><a href="index.html">मुखपृष्ठ</a></li>
-        <li><a href="status.html" class="active">विद्यालय स्थिति</a></li>
-        <li><a href="report.html">रिपोर्ट</a></li>
-        <li><a href="contact.html">संपर्क करें</a></li>
+        <li><a id="navHome" href="index.html">मुखपृष्ठ</a></li>
+        <li><a id="navStatus" href="status.html" class="active">विद्यालय स्थिति</a></li>
+        <li><a id="navReport" href="report.html">रिपोर्ट</a></li>
+        <li><a id="navContact" href="contact.html">संपर्क करें</a></li>
       </ul>
     </nav>
+
+    <!-- 🌍 Language Switch -->
+    <select id="languageSelect" onchange="changeLanguage()">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+    </select>
   </header>
 
+  <!-- 🏫 Main Content -->
   <section class="content">
-    <h1>विद्यालय की स्थिति देखें / Track School Status</h1>
-    <p class="note">नोट: कृपया विद्यालय कोड या जनपद नाम भरकर स्थिति देखें।</p>
+    <h1 id="statusHeading">विद्यालय की स्थिति देखें / Track School Status</h1>
+    <p class="note" id="statusNote">नोट: कृपया विद्यालय कोड या जनपद नाम भरकर स्थिति देखें।</p>
 
     <form id="statusForm">
-      <label for="schoolId">विद्यालय कोड / School ID *</label>
+      <label id="labelSchoolId" for="schoolId">विद्यालय कोड / School ID *</label>
       <input type="text" id="schoolId" placeholder="विद्यालय कोड दर्ज करें">
 
-      <label for="district">जनपद / District *</label>
+      <label id="labelDistrict" for="district">जनपद / District *</label>
       <input type="text" id="district" placeholder="जनपद का नाम दर्ज करें">
 
-      <div class="or">OR</div>
+      <div class="or" id="orText">या / OR</div>
 
-      <label for="email">ई-मेल आईडी / Email ID *</label>
+      <label id="labelEmail" for="email">ई-मेल आईडी / Email ID *</label>
       <input type="email" id="email" placeholder="ई-मेल आईडी दर्ज करें">
 
-      <label for="captchaInput">कृपया नीचे दिए गए बॉक्स में उपलब्ध सुरक्षा कोड अंकित करें *</label>
+      <label id="labelCaptcha" for="captchaInput">कृपया नीचे दिए गए बॉक्स में उपलब्ध सुरक्षा कोड अंकित करें *</label>
       <div class="captcha-box">
         <span id="captchaText">814084</span>
         <button type="button" id="refreshBtn">अन्य अंक प्राप्त करें</button>
@@ -186,13 +195,13 @@
       <input type="text" id="captchaInput" placeholder="कैप्चा अंक दर्ज करें" required>
 
       <div class="btn-group">
-        <button type="submit" class="submit-btn">सबमिट करें</button>
-        <button type="reset" class="reset-btn">रीसेट</button>
+        <button type="submit" id="submitBtn" class="submit-btn">सबमिट करें</button>
+        <button type="reset" id="resetBtn" class="reset-btn">रीसेट</button>
       </div>
     </form>
 
     <div class="status-container" id="statusContainer" style="display:none;">
-      <h2>विद्यालय स्थिति रिपोर्ट</h2>
+      <h2 id="statusReportHeading">विद्यालय स्थिति रिपोर्ट</h2>
       <div class="status-card">
         <h3 id="schoolName">विद्यालय A</h3>
         <p><strong>स्वच्छता:</strong> अच्छी</p>
@@ -204,9 +213,11 @@
   </section>
 
   <footer>
-    <p>© 2025 उत्तर प्रदेश सरकार | स्मार्ट स्कूल मॉनिटरिंग पहल</p>
+    <p>© 2025 | स्मार्ट स्कूल मॉनिटरिंग पहल</p>
   </footer>
 
+  <!-- ⚙️ Script -->
+  <script src="script.js"></script>
   <script>
     document.getElementById("refreshBtn").addEventListener("click", () => {
       const random = Math.floor(100000 + Math.random() * 900000);

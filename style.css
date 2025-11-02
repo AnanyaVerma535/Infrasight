@@ -40,6 +40,26 @@ body {
 .navbar a:hover {
   text-decoration: underline;
 }
+.language-switcher {
+  margin-left: 20px;
+}
+
+.language-switcher select {
+  background-color: white;
+  color: #0078d7;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.3s;
+}
+
+.language-switcher select:hover {
+  background-color: #e8f0fe;
+}
+
 
 /* Hero */
 .hero {
