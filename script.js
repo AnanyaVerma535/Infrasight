@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // 🌐 Smooth scroll for navigation
 function scrollToSection() {
   const section = document.getElementById('features');
@@ -160,8 +159,3 @@ window.onload = () => {
   if (select) select.value = savedLang;
   setTimeout(changeLanguage, 100);
 };
-=======
-function scrollToSection() {
-  document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-}
->>>>>>> c75f1cc422fe12b7df3c2439d55ee727243790cf
