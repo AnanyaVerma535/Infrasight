@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -97,3 +98,210 @@
   <script src="script.js"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infrasight | विद्यालय रिपोर्ट</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap');
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
+    .navbar { background-color: #1e3a8a; }
+    #map { height: 350px; width: 100%; border-radius: 10px; margin-top: 10px; }
+    #video-stream { width: 100%; max-width: 400px; display: none; border-radius: 10px; margin: auto; background: #000; }
+    #capture-canvas { display: none; }
+  </style>
+</head>
+<body onload="lucide.createIcons();">
+
+  <!-- Header -->
+  <header class="navbar p-4 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+      <div class="logo flex items-center mb-3 md:mb-0">
+        <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+        <h2 class="text-xl font-bold">Infrasight | विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+      </div>
+      <div class="flex items-center space-x-4">
+        <select id="langSelect" class="p-2 text-black rounded-md">
+          <option value="hi">हिन्दी</option>
+          <option value="en">English</option>
+        </select>
+        <nav>
+          <ul class="flex space-x-4 md:space-x-6 font-medium">
+            <li><a href="index.html" class="hover:text-yellow-300">मुखपृष्ठ</a></li>
+            <li><a href="status.html" class="hover:text-yellow-300">स्थिति</a></li>
+            <li><a href="report.html" class="text-yellow-300 border-b-2 border-yellow-300">रिपोर्ट</a></li>
+            <li><a href="contact.html" class="hover:text-yellow-300">संपर्क</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Report Form -->
+  <section class="max-w-3xl mx-auto p-6 md:p-8 bg-white my-10 rounded-xl shadow-2xl">
+    <h1 id="form-title" class="text-3xl font-extrabold text-indigo-700 mb-2">स्कूल की स्थिति की रिपोर्ट करें</h1>
+    <p id="form-desc" class="text-gray-600 mb-6">कृपया नीचे दिए गए विवरण भरें ताकि सरकार स्थिति की जांच कर सके।</p>
+
+    <form id="reportForm" class="space-y-4">
+      <div>
+        <label id="label-name" for="name" class="block text-sm font-medium text-gray-700 mb-1">आपका नाम:</label>
+        <input type="text" id="name" class="w-full p-3 border rounded-lg" placeholder="अपना नाम दर्ज करें" required>
+      </div>
+
+      <div>
+        <label id="label-school" for="school" class="block text-sm font-medium text-gray-700 mb-1">स्कूल का नाम:</label>
+        <input type="text" id="school" class="w-full p-3 border rounded-lg" placeholder="स्कूल का नाम दर्ज करें" required>
+      </div>
+
+      <div>
+        <label id="label-details" for="details" class="block text-sm font-medium text-gray-700 mb-1">विवरण:</label>
+        <textarea id="details" rows="4" class="w-full p-3 border rounded-lg" placeholder="समस्या का विवरण..." required></textarea>
+      </div>
+
+      <!-- Webcam Capture -->
+      <div class="pt-4 border-t border-gray-200">
+        <label id="label-photo" class="block text-sm font-bold text-gray-700 mb-2">लाइव तस्वीर कैप्चर करें:</label>
+
+        <div id="initial-webcam-prompt" class="text-center bg-gray-100 p-4 rounded-xl border-2 border-dashed border-gray-300">
+          <p class="mb-3 text-gray-700 font-medium">कैमरा शुरू करने के लिए नीचे क्लिक करें।</p>
+          <button type="button" id="startWebcamBtn" class="px-5 py-2 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 transition">
+            <i data-lucide="video" class="w-5 h-5 mr-2 inline"></i> कैमरा शुरू करें
+          </button>
+        </div>
+
+        <video id="video-stream" autoplay playsinline></video>
+        <button type="button" id="capturePhotoBtn" class="hidden mt-3 px-5 py-2 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition">
+          <i data-lucide="camera" class="w-5 h-5 mr-2 inline"></i> तस्वीर कैप्चर करें
+        </button>
+
+        <canvas id="capture-canvas"></canvas>
+        <p id="capture-status" class="text-sm text-gray-600 mt-2 hidden"></p>
+        <div id="image-preview-status" class="hidden p-3 bg-green-100 rounded-lg border-l-4 border-green-500 text-green-800 font-semibold mt-3">
+          तस्वीर सफलतापूर्वक कैप्चर हो गई।
+        </div>
+        <input type="hidden" id="captured_image_data" required>
+      </div>
+
+      <!-- Location -->
+      <div class="pt-4 border-t border-gray-200">
+        <label id="label-location" class="block text-sm font-medium text-gray-700 mb-1">स्थान जोड़ें (मानचित्र पर क्लिक करें):</label>
+        <div id="map"></div>
+        <div class="mt-2">
+          <label class="text-sm text-gray-700">Latitude:</label>
+          <input type="text" id="latitude" readonly class="w-full p-2 border rounded bg-gray-50">
+          <label class="text-sm text-gray-700 mt-2">Longitude:</label>
+          <input type="text" id="longitude" readonly class="w-full p-2 border rounded bg-gray-50">
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn" class="w-full py-3 bg-indigo-600 text-white font-bold text-lg rounded-lg shadow-xl hover:bg-indigo-700 transition">
+        <i data-lucide="send" class="w-5 h-5 mr-2 inline"></i> रिपोर्ट सबमिट करें
+      </button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="p-8 text-center bg-gray-800 text-gray-300">
+    <p>© 2025 Infrasight | Government of Uttar Pradesh | AI & IoT Initiative</p>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const video = document.getElementById('video-stream');
+    const canvas = document.getElementById('capture-canvas');
+    const startBtn = document.getElementById('startWebcamBtn');
+    const captureBtn = document.getElementById('capturePhotoBtn');
+    const captureStatus = document.getElementById('capture-status');
+    const imageStatus = document.getElementById('image-preview-status');
+    const inputImage = document.getElementById('captured_image_data');
+    const langSelect = document.getElementById('langSelect');
+    let streamTrack = null;
+
+    async function startWebcam() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        streamTrack = stream.getVideoTracks()[0];
+        video.style.display = 'block';
+        captureBtn.classList.remove('hidden');
+        document.getElementById('initial-webcam-prompt').classList.add('hidden');
+        captureStatus.textContent = 'कैमरा चालू है, तस्वीर कैप्चर करें।';
+        captureStatus.classList.remove('hidden');
+      } catch {
+        alert('कैमरा अनुमति अस्वीकृत या अनुपलब्ध।');
+      }
+    }
+
+    function capturePhoto() {
+      if (!streamTrack) return;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const dataURL = canvas.toDataURL('image/jpeg');
+      inputImage.value = dataURL;
+      imageStatus.classList.remove('hidden');
+      captureStatus.textContent = 'तस्वीर कैप्चर की गई।';
+    }
+
+    startBtn.addEventListener('click', startWebcam);
+    captureBtn.addEventListener('click', capturePhoto);
+
+    // Leaflet map
+    const map = L.map('map').setView([26.8467, 80.9462], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+    let marker;
+    map.on('click', e => {
+      if (marker) map.removeLayer(marker);
+      marker = L.marker(e.latlng).addTo(map);
+      document.getElementById('latitude').value = e.latlng.lat.toFixed(5);
+      document.getElementById('longitude').value = e.latlng.lng.toFixed(5);
+    });
+
+    // Language switch
+    const translations = {
+      hi: {
+        "form-title": "स्कूल की स्थिति की रिपोर्ट करें",
+        "form-desc": "कृपया नीचे दिए गए विवरण भरें ताकि सरकार स्थिति की जांच कर सके।",
+        "label-name": "आपका नाम:",
+        "label-school": "स्कूल का नाम:",
+        "label-details": "विवरण:",
+        "label-photo": "लाइव तस्वीर कैप्चर करें:",
+        "label-location": "स्थान जोड़ें (मानचित्र पर क्लिक करें):",
+        "submit-btn": "रिपोर्ट सबमिट करें"
+      },
+      en: {
+        "form-title": "Report School Condition",
+        "form-desc": "Please fill in the details below so authorities can review the issue.",
+        "label-name": "Your Name:",
+        "label-school": "School Name:",
+        "label-details": "Description:",
+        "label-photo": "Capture Live Photo:",
+        "label-location": "Add Location (Click on Map):",
+        "submit-btn": "Submit Report"
+      }
+    };
+
+    langSelect.addEventListener('change', e => {
+      const lang = e.target.value;
+      for (const id in translations[lang]) {
+        document.getElementById(id).textContent = translations[lang][id];
+      }
+    });
+  </script>
+</body>
+</html>
+>>>>>>> c75f1cc422fe12b7df3c2439d55ee727243790cf

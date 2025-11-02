@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="title_about">About Us | School Infrastructure Monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', 'Noto Sans Devanagari', sans-serif; }
+        .navbar { background-color: #1e3a8a; color: white; }
+    </style>
+</head>
+<body onload="lucide.createIcons(); changeLanguage('en');" class="bg-gray-50">
+    
+    <script>
+        // --- LOCALIZED CONTENT ---
+        const content = {
+            en: {
+                // Global/Nav
+                nav_title: "School Infrastructure Monitoring System",
+                nav_home: "Home",
+                nav_status: "School Status",
+                nav_report: "Report",
+                nav_feedback: "Feedback",
+                footer_text: "© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative",
+                title_about: "About Us | School Infrastructure Monitoring",
+
+                // Page Content
+                objective_title: "Our Objective",
+                objective_sub: "Bringing transparency and accountability to the monitoring of school infrastructure to ensure quality education.",
+
+                goal_title: "What is Our Goal?",
+                goal_body: "Our primary goal is to create a citizen-centric platform where anyone can directly report the status of school infrastructure. By utilizing AI and IoT, we ensure rapid identification, verification, and resolution of issues, minimizing the time taken for manual inspection.",
+                
+                why_imp_title: "Why is This Important?",
+                res_q: "Quick Resolution:",
+                res_body: "Complaints are prioritized for immediate action.",
+                acc_q: "Accountability:",
+                acc_body: "GPS-based verification ensures officers can only confirm action when physically present on-site.",
+                eng_q: "Citizen Engagement:",
+                eng_body: "Empowering citizens to directly participate in governance and witness improvements.",
+
+                how_sys_title: "How the System Works",
+                step1_title: "1. Citizen Report",
+                step1_body: "Citizens take a picture of the school's condition using a live webcam and file a complaint.",
+                step2_title: "2. Prioritization & Monitoring",
+                step2_body: "Complaints are prioritized based on categories like 'Worst', 'Bad', and 'Good'.",
+                step3_title: "3. Official Verification",
+                step3_body: "Officers visit the site and upload a GPS-verified photo of the action taken within 100 meters of the location.",
+            },
+            hi: {
+                // Global/Nav
+                nav_title: "विद्यालय अवसंरचना निगरानी प्रणाली",
+                nav_home: "मुखपृष्ठ",
+                nav_status: "स्कूल स्थिति",
+                nav_report: "रिपोर्ट",
+                nav_feedback: "फीडबैक",
+                footer_text: "© 2025 उत्तर प्रदेश सरकार | एआई और आईओटी निगरानी पहल",
+                title_about: "हमारे बारे में | स्कूल अवसंरचना निगरानी",
+
+                // Page Content
+                objective_title: "हमारा उद्देश्य",
+                objective_sub: "शिक्षा की गुणवत्ता सुनिश्चित करने के लिए स्कूल के बुनियादी ढांचे की निगरानी में पारदर्शिता और जवाबदेही लाना।",
+
+                goal_title: "हमारा लक्ष्य क्या है?",
+                goal_body: "हमारा प्राथमिक लक्ष्य एक नागरिक-केंद्रित मंच बनाना है जहां कोई भी व्यक्ति स्कूल के बुनियादी ढांचे की स्थिति पर सीधे रिपोर्ट कर सके। एआई और आईओटी का उपयोग करके, हम मैन्युअल निरीक्षण में लगने वाले समय को कम करते हुए, समस्याओं की त्वरित पहचान, सत्यापन और समाधान सुनिश्चित करते हैं।",
+                
+                why_imp_title: "यह क्यों महत्वपूर्ण है?",
+                res_q: "त्वरित समाधान:",
+                res_body: "शिकायतों को तुरंत कार्रवाई के लिए प्राथमिकता दी जाती है।",
+                acc_q: "जवाबदेही:",
+                acc_body: "जीपीएस-आधारित सत्यापन यह सुनिश्चित करता है कि अधिकारी केवल साइट पर होने पर ही कार्रवाई की पुष्टि कर सकते हैं।",
+                eng_q: "नागरिक जुड़ाव:",
+                eng_body: "नागरिकों को सीधे सरकारी प्रक्रिया में भाग लेने और सुधार देखने के लिए सशक्त बनाना।",
+                
+                how_sys_title: "सिस्टम कैसे काम करता है",
+                step1_title: "1. नागरिक रिपोर्ट (Citizen Report)",
+                step1_body: "नागरिक लाइव वेबकैम का उपयोग करके स्कूल की स्थिति की तस्वीर लेते हैं और शिकायत दर्ज करते हैं।",
+                step2_title: "2. प्राथमिकता और निगरानी (Prioritization)",
+                step2_body: "शिकायतों को 'Worst', 'Bad', और 'Good' जैसी श्रेणियों में प्राथमिकता के आधार पर क्रमबद्ध किया जाता है।",
+                step3_title: "3. आधिकारिक सत्यापन (Official Verification)",
+                step3_body: "अधिकारी 100 मीटर की दूरी के भीतर मौके पर जाकर कार्रवाई की जीपीएस-सत्यापित तस्वीर अपलोड करते हैं।",
+            }
+        };
+
+        function changeLanguage(lang) {
+            const elements = document.querySelectorAll('[data-key]');
+            
+            // Update HTML lang attribute for accessibility and font loading
+            document.documentElement.lang = lang;
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (content[lang] && content[lang][key]) {
+                    // Check if it's a strong tag inside a list item
+                    if (element.tagName === 'STRONG' && element.parentElement.tagName === 'LI') {
+                        // For list items with strong tags, we only update the strong text
+                        element.textContent = content[lang][key];
+                    } else {
+                        element.textContent = content[lang][key];
+                    }
+                }
+            });
+            
+            // Special handling for title tag
+            document.title = content[lang].title_about;
+            
+            // Set the selected option in the dropdown
+            const selector = document.getElementById('language-selector');
+            if (selector) {
+                selector.value = lang;
+            }
+        }
+    </script>
+
+    <!-- Navbar -->
+    <header class="navbar text-white shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center">
+            
+            <div class="flex flex-col md:flex-row w-full justify-between items-center space-y-3 md:space-y-0">
+                <!-- Logo and Title -->
+                <div class="logo flex items-center">
+                    <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+                    <h2 class="text-2xl font-extrabold tracking-tight" data-key="nav_title">School Infrastructure Monitoring System</h2>
+                </div>
+                
+                <!-- Navigation & Language Selector Wrapper -->
+                <div class="flex items-center space-x-6">
+                    <!-- Navigation -->
+                    <nav>
+                        <ul class="flex space-x-4 sm:space-x-6">
+                            <li><a href="index.html" class="hover:text-yellow-400 font-medium transition duration-200" data-key="nav_home">Home</a></li>
+                            <li><a href="status.html" class="hover:text-yellow-400 font-medium transition duration-200" data-key="nav_status">School Status</a></li>
+                            <li><a href="report.html" class="hover:text-yellow-400 font-medium transition duration-200" data-key="nav_report">Report</a></li>
+                            <li><a href="feedback.html" class="hover:text-yellow-400 font-medium transition duration-200" data-key="nav_feedback">Feedback</a></li>
+                        </ul>
+                    </nav>
+
+                    <!-- Language Selector -->
+                    <div class="relative">
+                        <select 
+                            id="language-selector" 
+                            class="bg-indigo-800 text-white text-sm py-1.5 px-3 rounded-lg border border-indigo-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 cursor-pointer"
+                            onchange="changeLanguage(this.value)"
+                        >
+                            <option value="en" selected>English</option>
+                            <option value="hi">हिन्दी</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 class="text-4xl font-extrabold text-center text-indigo-900 mb-4 border-b pb-2" data-key="objective_title">Our Objective</h1>
+        <p class="text-lg text-gray-600 text-center mb-10" data-key="objective_sub">Bringing transparency and accountability to the monitoring of school infrastructure to ensure quality education.</p>
+
+        <!-- Aim and Importance Section -->
+        <section class="mb-12 p-6 bg-white rounded-xl shadow-lg border-t-4 border-indigo-500">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center"><i data-lucide="target" class="w-6 h-6 mr-3 text-indigo-600"></i> <span data-key="goal_title">What is Our Goal?</span></h2>
+            <p class="text-gray-700 leading-relaxed mb-4" data-key="goal_body">Our primary goal is to create a citizen-centric platform where anyone can directly report the status of school infrastructure. By utilizing AI and IoT, we ensure rapid identification, verification, and resolution of issues, minimizing the time taken for manual inspection.</p>
+            
+            <h2 class="text-3xl font-bold text-gray-800 mb-4 flex items-center"><i data-lucide="zap" class="w-6 h-6 mr-3 text-indigo-600"></i> <span data-key="why_imp_title">Why is This Important?</span></h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700 pl-4">
+                <li><strong class="font-semibold" data-key="res_q">Quick Resolution:</strong> <span data-key="res_body">Complaints are prioritized for immediate action.</span></li>
+                <li><strong class="font-semibold" data-key="acc_q">Accountability:</strong> <span data-key="acc_body">GPS-based verification ensures officers can only confirm action when physically present on-site.</span></li>
+                <li><strong class="font-semibold" data-key="eng_q">Citizen Engagement:</strong> <span data-key="eng_body">Empowering citizens to directly participate in governance and witness improvements.</span></li>
+            </ul>
+        </section>
+
+        <!-- How the System Works Section -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8" data-key="how_sys_title">How the System Works</h2>
+            <div class="space-y-8">
+                <div class="flex items-start bg-white p-6 rounded-xl shadow-md">
+                    <div class="p-3 bg-red-100 rounded-full mr-4"><i data-lucide="camera" class="w-6 h-6 text-red-600"></i></div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-1" data-key="step1_title">1. Citizen Report</h3>
+                        <p class="text-gray-600" data-key="step1_body">Citizens take a picture of the school's condition using a live webcam and file a complaint.</p>
+                    </div>
+                </div>
+                <div class="flex items-start bg-white p-6 rounded-xl shadow-md">
+                    <div class="p-3 bg-orange-100 rounded-full mr-4"><i data-lucide="trending-up" class="w-6 h-6 text-orange-600"></i></div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-1" data-key="step2_title">2. Prioritization & Monitoring</h3>
+                        <p class="text-gray-600" data-key="step2_body">Complaints are prioritized based on categories like 'Worst', 'Bad', and 'Good'.</p>
+                    </div>
+                </div>
+                <div class="flex items-start bg-white p-6 rounded-xl shadow-md">
+                    <div class="p-3 bg-blue-100 rounded-full mr-4"><i data-lucide="shield-check" class="w-6 h-6 text-blue-600"></i></div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-1" data-key="step3_title">3. Official Verification</h3>
+                        <p class="text-gray-600" data-key="step3_body">Officers visit the site and upload a GPS-verified photo of the action taken within 100 meters of the location.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-900 text-white mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
+            <p class="text-sm" data-key="footer_text">© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative</p>
+        </div>
+    </footer>
+    
+</body>
+</html>

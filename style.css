@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -209,4 +210,197 @@ footer {
   background-color: #0078d7;
   color: white;
   font-size: 0.9rem;
+=======
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0078d7;
+  color: white;
+  padding: 10px 40px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  background-image: url('https://sarkarischool.in/wp-content/uploads/WhatsApp-Image-2020-08-16-at-13.40.58-1024x512.jpeg');
+  background-size: cover;
+  background-position: center;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.hero .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.hero-content button {
+  background-color: #f7b731;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.hero-content button:hover {
+  background-color: #ffd24c;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ✅ Features Section */
+.features {
+  display: flex;
+  justify-content: center;      /* center horizontally */
+  align-items: stretch;
+  flex-wrap: nowrap;            /* ✅ keeps 4 cards in one line */
+  gap: 25px;
+  padding: 60px 20px;
+  background: #f4f6f8;
+  overflow-x: auto;             /* ✅ allows horizontal scroll on small screens */
+}
+
+.card {
+  position: relative;
+  flex: 1;
+  min-width: 22%;               /* ✅ 4 cards fit in one row */
+  max-width: 300px;
+  height: 260px;
+  color: white;
+  border-radius: 15px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Overlay for visibility */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 0;
+  transition: background 0.3s ease;
+}
+
+/* Text above overlay */
+.card h3, 
+.card p {
+  position: relative;
+  z-index: 1;
+}
+
+/* Backgrounds with tint */
+.red {
+  background-image: 
+    linear-gradient(rgba(255, 0, 0, 0.25), rgba(255, 0, 0, 0.25)),
+    url("https://repository.education.gov.in/wp-content/uploads/2018/03/ps-rakholi-english-med-.jpg");
+}
+
+.orange {
+  background-image:
+    linear-gradient(rgba(255, 165, 0, 0.25), rgba(255, 165, 0, 0.25)),
+    url("https://akm-img-a-in.tosshub.com/indiatoday/images/story/201609/delhi-schools_647_090716034408.jpg?VersionId=Q6Ax68.Dbxcize5zrQajD9unusH2cWls&size=690:388");
+}
+
+.blue {
+  background-image:
+    linear-gradient(rgba(0, 123, 255, 0.25), rgba(0, 123, 255, 0.25)),
+    url("https://statetimes.in/wp-content/uploads/2023/09/ok.jpg");
+}
+
+.purple {
+  background-image:
+    linear-gradient(rgba(128, 0, 128, 0.25), rgba(128, 0, 128, 0.25)),
+    url("https://images.financialexpressdigital.com/2018/07/digi-1.jpg?w=440");
+}
+
+/* Hover Effects */
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+}
+
+.card:hover::before {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #0078d7;
+  color: white;
+  font-size: 0.9rem;
+>>>>>>> c75f1cc422fe12b7df3c2439d55ee727243790cf
 }
