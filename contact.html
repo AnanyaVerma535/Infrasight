@@ -1,65 +1,3 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>संपर्क करें | विद्यालय अवसंरचना निगरानी प्रणाली</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="contact.css">
-</head>
-<body>
-
-  <!-- ✅ Header -->
-  <header class="navbar">
-    <div class="logo">
-      <img src="logo.png" alt="logo">
-      <h2 id="navTitle">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
-    </div>
-    <nav>
-      <ul>
-        <li><a id="navHome" href="index.html">मुखपृष्ठ</a></li>
-        <li><a id="navStatus" href="status.html">स्कूल स्थिति</a></li>
-        <li><a id="navReport" href="report.html">रिपोर्ट</a></li>
-        <li><a id="navContact" href="contact.html" class="active">संपर्क करें</a></li>
-      </ul>
-    </nav>
-
-    <!-- 🌐 Language selector -->
-    <select id="languageSelect" onchange="changeLanguage()">
-      <option value="en">English</option>
-      <option value="hi">हिन्दी</option>
-    </select>
-  </header>
-
-  <!-- ✅ Contact Section -->
-  <section class="contact-section">
-    <h1 id="contactHeading">संपर्क करें</h1>
-    <p id="contactDesc">अगर आपके पास कोई सुझाव या शिकायत है, तो कृपया नीचे दिए गए फॉर्म के माध्यम से संपर्क करें।</p>
-
-    <form class="contact-form">
-      <label id="nameLabel" for="nameInput">नाम:</label>
-      <input type="text" id="nameInput" placeholder="अपना नाम दर्ज करें" required>
-
-      <label id="emailLabel" for="emailInput">ईमेल:</label>
-      <input type="email" id="emailInput" placeholder="अपना ईमेल दर्ज करें" required>
-
-      <label id="messageLabel" for="messageInput">संदेश:</label>
-      <textarea id="messageInput" rows="4" placeholder="अपना संदेश यहाँ लिखें..." required></textarea>
-
-      <button type="submit" id="submitBtn">भेजें</button>
-    </form>
-  </section>
-
-  <!-- ✅ Footer -->
-  <footer>
-    <p>© 2025 | AI एवं IoT आधारित विद्यालय मॉनिटरिंग पहल</p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-=======
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -230,7 +168,6 @@
 
     function applyLanguage(lang) {
       const t = translations[lang];
-
       document.documentElement.lang = lang;
       document.getElementById("title-text").innerText = t.title;
       document.getElementById("page-title").innerText = `${t.contactHeading} | ${t.title}`;
@@ -250,4 +187,3 @@
   </script>
 </body>
 </html>
->>>>>>> c75f1cc422fe12b7df3c2439d55ee727243790cf
