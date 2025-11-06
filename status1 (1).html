@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="doc-title">InfraSight | विद्यालय स्थिति</title>
+    
+    <!-- Tailwind & Lucide -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Firebase Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        // FIX: setLogLevel removed from firebase-auth.js import
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // FIX: setLogLevel added to firebase-firestore.js import
+        import { getFirestore, collection, query, onSnapshot, doc, setDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        if (Object.keys(firebaseConfig).length > 0) {
+            const app = initializeApp(firebaseConfig);
+            window.db = getFirestore(app);
+            window.auth = getAuth(app);
+            
+            // setLogLevel now works as it's correctly imported from firestore
+            setLogLevel('debug'); // Enable Firestore logging
+
+            // Mandatory Authentication
+            if (initialAuthToken) {
+                signInWithCustomToken(window.auth, initialAuthToken).catch(e => {
+                    console.error("Custom Auth Token Sign-In Failed:", e);
+                    signInAnonymously(window.auth).catch(e => console.error("Anonymous Sign-In Failed:", e));
+                });
+            } else {
+                signInAnonymously(window.auth).catch(e => console.error("Anonymous Sign-In Failed:", e));
+            }
+
+            // Authentication State Listener to start fetching data
+            onAuthStateChanged(window.auth, (user) => {
+                if (user) {
+                    window.userId = user.uid;
+                    // Start listening for complaints
+                    window.unsubscribe = setupRealtimeListener(); 
+                    // Seed data for initial testing if needed
+                    seedInitialData();
+                } else {
+                    window.userId = crypto.randomUUID();
+                    // Optional: Fallback for unauthenticated users if anonymous sign-in failed
+                }
+            });
+
+        } else {
+            console.error("Firebase configuration is missing. Running in mock mode.");
+        }
+        
+        // Function to create the firestore collection path
+        window.getComplaintsCollectionRef = () => {
+            if (!window.db) return null;
+            // Public path for collaborative data
+            return collection(window.db, 'artifacts', appId, 'public', 'data', 'complaints');
+        };
+
+        // Seed data for easy testing (only runs once on first load)
+        const seedInitialData = async () => {
+            const mockComplaints = [
+                { id: 'C003', school: 'प्राथमिक विद्यालय, फतेहपुर', district: 'Fatehpur', category: 'Worst', status: 'Pending', issue: 'दीवारें ढह रही हैं, छत में बड़े छेद हैं।', action: 'तत्काल मरम्मत/पुनर्निर्माण', date: '2025-10-28' },
+                { id: 'C005', school: 'जूनियर हाई स्कूल, कानपुर', district: 'Kanpur', category: 'Worst', status: 'In Progress', issue: 'शौचालय पूरी तरह से अनुपयोगी और अस्वच्छ हैं।', action: 'स्वच्छता और बुनियादी ढांचे का नवीनीकरण', date: '2025-11-01' },
+                { id: 'C001', school: 'गवर्नमेंट स्कूल, लखनऊ', district: 'Lucknow', category: 'Bad', status: 'Pending', issue: 'टूटे हुए फर्नीचर और बिजली की खुली तारें।', action: 'सुरक्षा और फर्नीचर प्रतिस्थापन', date: '2025-10-30' },
+                { id: 'C004', school: 'प्राथमिक पाठशाला, अयोध्या', district: 'Ayodhya', category: 'Bad', status: 'Resolved', issue: 'पेयजल की सुविधा नहीं है, हैंडपंप सूखा है।', action: 'नए जल स्रोत की स्थापना', date: '2025-10-29' },
+                { id: 'C002', school: 'मॉडल स्कूल, वाराणसी', district: 'Varanasi', category: 'Good', status: 'In Progress', issue: 'खेल के मैदान में थोड़ी मरम्मत की आवश्यकता है।', action: 'सामान्य रखरखाव', date: '2025-10-25' }
+            ];
+
+            mockComplaints.forEach(async (complaint) => {
+                const docRef = doc(window.getComplaintsCollectionRef(), complaint.id);
+                try {
+                    // Use setDoc with merge:true to ensure it's idempotent
+                    await setDoc(docRef, complaint, { merge: true });
+                } catch (e) {
+                    console.error("Error seeding document:", complaint.id, e);
+                }
+            });
+        };
+        
+        // Real-time listener function
+        window.setupRealtimeListener = () => {
+            const q = query(window.getComplaintsCollectionRef());
+            console.log("Setting up real-time listener for complaints...");
+            return onSnapshot(q, (querySnapshot) => {
+                const allComplaints = [];
+                querySnapshot.forEach((doc) => {
+                    allComplaints.push(doc.data());
+                });
+                console.log("Fetched complaints:", allComplaints.length);
+                window.complaintsData = allComplaints; // Store globally
+                window.applyFilters(); // Re-render with new data
+            }, (error) => {
+                console.error("Firestore snapshot error:", error);
+            });
+        };
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .lang-btn {
+            background-color: #facc15;
+            color: #1e3a8a;
+            font-weight: bold;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        main {
+            flex-grow: 1;
+        }
+        .priority-worst { background-color: #fee2e2; color: #b91c1c; border-color: #ef4444; }
+        .priority-bad { background-color: #fffbeb; color: #b45309; border-color: #f59e0b; }
+        .priority-good { background-color: #ecfdf5; color: #065f46; border-color: #10b981; }
+    </style>
+</head>
+<body onload="lucide.createIcons(); setupInitialLanguage();">
+
+    <!-- Navbar -->
+    <header class="bg-indigo-900 shadow-xl text-white p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="logo flex items-center mb-4 md:mb-0">
+                <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+                <h2 id="title-text" class="text-xl font-bold font-['Noto Sans Devanagari']">इन्फ्रासाइट: विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+            </div>
+            <div class="flex items-center">
+                <nav>
+                    <ul id="nav-links" class="flex space-x-4 md:space-x-8 text-sm md:text-base font-medium">
+                        <li><a href="index.html" class="hover:text-yellow-300 transition duration-150" data-key="nav_home">मुखपृष्ठ</a></li>
+                        <li><a href="status.html" class="hover:text-yellow-300 transition duration-150 font-bold border-b-2 border-yellow-300" data-key="nav_status">स्कूल स्थिति</a></li>
+                        <li><a href="report.html" class="hover:text-yellow-300 transition duration-150" data-key="nav_report">रिपोर्ट</a></li>
+                        <li><a href="feedback.html" class="hover:text-yellow-300 transition duration-150" data-key="nav_feedback">फीडबैक</a></li>
+                        <li><a href="team.html" class="hover:text-yellow-300 transition duration-150" data-key="nav_team">टीम</a></li>
+                    </ul>
+                </nav>
+                <button class="lang-btn" onclick="toggleLang()">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-10 my-10">
+        <h1 id="main-heading" class="text-3xl font-bold text-indigo-700 mb-6 flex items-center">
+            <i data-lucide="list-checks" class="w-7 h-7 mr-3"></i>
+            <span data-key="heading">शिकायत निगरानी डैशबोर्ड</span>
+        </h1>
+        <p id="main-subtext" class="text-gray-600 mb-8" data-key="subtext">
+            सभी शिकायतों की वास्तविक समय की स्थिति।
+        </p>
+
+        <!-- Filter Controls -->
+        <div class="bg-white p-6 rounded-xl shadow-lg mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- District Filter -->
+            <div>
+                <label for="filterDistrict" class="block text-sm font-medium text-gray-700 mb-1" data-key="filter_dist">जिला चुनें</label>
+                <select id="filterDistrict" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="All" data-key="option_all">सभी</option>
+                    <option value="Lucknow" data-key="dist_lucknow">लखनऊ</option>
+                    <option value="Kanpur" data-key="dist_kanpur">कानपुर</option>
+                    <option value="Agra" data-key="dist_agra">आगरा</option>
+                    <option value="Ayodhya" data-key="dist_ayodhya">अयोध्या</option>
+                    <option value="Varanasi" data-key="dist_varanasi">वाराणसी</option>
+                    <option value="Fatehpur" data-key="dist_fatehpur">फतेहपुर</option>
+                </select>
+            </div>
+            
+            <!-- Priority Filter -->
+            <div>
+                <label for="filterPriority" class="block text-sm font-medium text-gray-700 mb-1" data-key="filter_priority">प्राथमिकता चुनें</label>
+                <select id="filterPriority" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="All" data-key="option_all">सभी</option>
+                    <option value="Worst" data-key="priority_worst">सबसे खराब (तत्काल)</option>
+                    <option value="Bad" data-key="priority_bad">खराब (मरम्मत)</option>
+                    <option value="Good" data-key="priority_good">अच्छा (रखरखाव)</option>
+                </select>
+            </div>
+            
+            <!-- Status Filter -->
+            <div>
+                <label for="filterStatus" class="block text-sm font-medium text-gray-700 mb-1" data-key="filter_status">कार्रवाई की स्थिति</label>
+                <select id="filterStatus" onchange="applyFilters()" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="All" data-key="option_all">सभी</option>
+                    <option value="Pending" data-key="status_pending">लंबित</option>
+                    <option value="In Progress" data-key="status_in_progress">प्रगति पर</option>
+                    <option value="Resolved" data-key="status_resolved">हल हो गया</option>
+                </select>
+            </div>
+            
+            <!-- Search Input & Button (UPDATED) -->
+            <div class="lg:col-span-1">
+                <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-1" data-key="filter_search">स्कूल/समस्या खोजें</label>
+                <div class="flex">
+                    <input type="text" id="searchInput" oninput="applyFilters()" class="w-full p-2 border border-gray-300 rounded-l-lg focus:ring-indigo-500 focus:border-indigo-500" data-key="search_placeholder" placeholder="स्कूल या समस्या ID...">
+                    <button onclick="applyFilters()" class="bg-indigo-600 text-white p-2 rounded-r-lg hover:bg-indigo-700 transition duration-150 flex items-center justify-center min-w-[40px]" title="Search">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="loadingIndicator" class="text-center p-8 text-indigo-600 text-xl font-semibold hidden">
+            <i data-lucide="loader" class="w-8 h-8 mx-auto animate-spin"></i>
+            <span data-key="loading_text">डेटा लोड हो रहा है...</span>
+        </div>
+        
+        <div id="complaintList" class="space-y-4">
+            <!-- Complaint cards will be rendered here -->
+            <p id="noResults" class="text-center text-gray-500 p-8 hidden" data-key="no_results">कोई शिकायत नहीं मिली जो फ़िल्टर से मेल खाती हो।</p>
+        </div>
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-8 text-center bg-gray-800 text-gray-300 mt-auto">
+        <p class="text-sm">© 2025 Government of Uttar Pradesh | InfraSight AI & IoT Monitoring Initiative</p>
+    </footer>
+
+    <script>
+        // Global data store
+        window.complaintsData = [];
+        window.currentLang = 'hi';
+
+        // -------- Language Data & Functions --------
+        const translations = {
+            hi: {
+                // Global
+                title: "इन्फ्रासाइट: विद्यालय अवसंरचना निगरानी प्रणाली",
+                nav_home: "मुखपृष्ठ", nav_status: "स्कूल स्थिति", nav_report: "रिपोर्ट", nav_feedback: "फीडबैक",
+                doc_title: "InfraSight | विद्यालय स्थिति",
+                // Main Content
+                heading: "शिकायत निगरानी डैशबोर्ड",
+                subtext: "सभी शिकायतों की वास्तविक समय की स्थिति।",
+                loading_text: "डेटा लोड हो रहा है...",
+                no_results: "कोई शिकायत नहीं मिली जो फ़िल्टर से मेल खाती हो।",
+                // Filters
+                filter_dist: "जिला चुनें", filter_priority: "प्राथमिकता चुनें", filter_status: "कार्रवाई की स्थिति",
+                filter_search: "स्कूल/समस्या खोजें", search_placeholder: "स्कूल या समस्या ID...",
+                option_all: "सभी",
+                dist_lucknow: "लखनऊ", dist_kanpur: "कानपुर", dist_agra: "आगरा", dist_ayodhya: "अयोध्या", dist_varanasi: "वाराणसी", dist_fatehpur: "फतेहपुर",
+                priority_worst: "सबसे खराब (तत्काल)", priority_bad: "खराब (मरम्मत)", priority_good: "अच्छा (रखरखाव)",
+                status_pending: "लंबित", status_in_progress: "प्रगति पर", status_resolved: "हल हो गया",
+                // Card Text
+                card_id: "शिकायत ID", card_date: "दिनांक", card_issue: "समस्या", card_action_req: "आवश्यक कार्रवाई",
+                card_button: "अधिकारी सत्यापन/कार्रवाई",
+                tag_worst: "कार्यवाही की तुरंत आवश्यकता", tag_bad: "मध्यम प्राथमिकता", tag_good: "कम प्राथमिकता",
+            },
+            en: {
+                // Global
+                title: "InfraSight: School Infrastructure Monitoring System",
+                nav_home: "Home", nav_status: "School Status", nav_report: "Report", nav_feedback: "Feedback",
+                doc_title: "InfraSight | School Status",
+                // Main Content
+                heading: "Complaint Monitoring Dashboard",
+                subtext: "Real-time status of all reported complaints.",
+                loading_text: "Loading data...",
+                no_results: "No complaints found matching the filters.",
+                // Filters
+                filter_dist: "Filter by District", filter_priority: "Filter by Priority", filter_status: "Action Status",
+                filter_search: "Search School/Issue", search_placeholder: "School or Issue ID...",
+                option_all: "All",
+                dist_lucknow: "Lucknow", dist_kanpur: "Kanpur", dist_agra: "Agra", dist_ayodhya: "Ayodhya", dist_varanasi: "Varanasi", dist_fatehpur: "Fatehpur",
+                priority_worst: "Worst (Immediate)", priority_bad: "Bad (Repair)", priority_good: "Good (Maintenance)",
+                status_pending: "Pending", status_in_progress: "In Progress", status_resolved: "Resolved",
+                // Card Text
+                card_id: "Complaint ID", card_date: "Date", card_issue: "Issue", card_action_req: "Action Required",
+                card_button: "Officer Verification/Action",
+                tag_worst: "Immediate Action Required", tag_bad: "Medium Priority", tag_good: "Low Priority",
+            }
+        };
+
+        function setupInitialLanguage() {
+            // Default to 'hi' if no previous preference is stored
+            window.currentLang = 'hi'; 
+            changeLanguage(window.currentLang);
+        }
+
+        function changeLanguage(lang) {
+            window.currentLang = lang;
+            const t = translations[lang];
+
+            // Update data-key elements
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' && el.type === 'text') {
+                         el.placeholder = t[key]; // Handle placeholder for input
+                    } else {
+                         el.textContent = t[key];
+                    }
+                }
+            });
+            
+            // Update special elements
+            document.getElementById('title-text').textContent = t.title;
+            document.getElementById('doc-title').textContent = t.doc_title;
+
+            // Update button text
+            document.querySelector('.lang-btn').textContent = lang === 'hi' ? 'EN' : 'HI';
+            
+            // Re-render complaints to update translated text inside cards
+            renderComplaints(window.complaintsData); 
+        }
+
+        function toggleLang() {
+            const newLang = window.currentLang === 'hi' ? 'en' : 'hi';
+            changeLanguage(newLang);
+        }
+        
+        // -------- Filtering and Rendering Logic --------
+
+        // Map categories to client-side sort order
+        const priorityOrder = { 'Worst': 1, 'Bad': 2, 'Good': 3 };
+
+        function applyFilters() {
+            const listContainer = document.getElementById('complaintList');
+            const noResults = document.getElementById('noResults');
+            
+            // Show loading indicator briefly if data is missing or about to be filtered
+            const loading = document.getElementById('loadingIndicator');
+            if (window.complaintsData.length === 0) {
+                 loading.classList.remove('hidden');
+            } else {
+                 loading.classList.add('hidden');
+            }
+
+
+            if (!window.complaintsData || window.complaintsData.length === 0) {
+                listContainer.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            const district = document.getElementById('filterDistrict').value;
+            const priority = document.getElementById('filterPriority').value;
+            const status = document.getElementById('filterStatus').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let filteredComplaints = window.complaintsData.filter(c => {
+                // 1. District Filter
+                const distMatch = district === 'All' || c.district === district;
+                
+                // 2. Priority Filter
+                const priorityMatch = priority === 'All' || c.category === priority;
+
+                // 3. Status Filter
+                const statusMatch = status === 'All' || c.status === status;
+
+                // 4. Search Filter (by school name, issue, or ID)
+                const searchMatch = !searchTerm || 
+                    (c.school && c.school.toLowerCase().includes(searchTerm)) || 
+                    (c.issue && c.issue.toLowerCase().includes(searchTerm)) || 
+                    (c.id && c.id.toLowerCase().includes(searchTerm));
+
+                return distMatch && priorityMatch && statusMatch && searchMatch;
+            });
+
+            // Client-side sorting by Priority (Worst -> Bad -> Good)
+            filteredComplaints.sort((a, b) => priorityOrder[a.category] - priorityOrder[b.category]);
+
+            renderComplaints(filteredComplaints);
+        }
+
+        function getCategoryTag(category) {
+            const lang = window.currentLang;
+            switch (category) {
+                case 'Worst': return translations[lang].tag_worst;
+                case 'Bad': return translations[lang].tag_bad;
+                case 'Good': return translations[lang].tag_good;
+                default: return translations[lang].tag_bad;
+            }
+        }
+
+        function getStatusText(status) {
+            const lang = window.currentLang;
+            switch (status) {
+                case 'Pending': return translations[lang].status_pending;
+                case 'In Progress': return translations[lang].status_in_progress;
+                case 'Resolved': return translations[lang].status_resolved;
+                default: return translations[lang].status_pending;
+            }
+        }
+        
+        function getStatusColor(status) {
+             switch (status) {
+                case 'Pending': return 'bg-yellow-500';
+                case 'In Progress': return 'bg-blue-500';
+                case 'Resolved': return 'bg-green-500';
+                default: return 'bg-gray-500';
+            }
+        }
+        
+        function getCardColor(category) {
+            switch (category) {
+                case 'Worst': return 'border-red-600 bg-red-50';
+                case 'Bad': return 'border-yellow-600 bg-yellow-50';
+                case 'Good': return 'border-green-600 bg-green-50';
+                default: return 'border-gray-300 bg-white';
+            }
+        }
+
+
+        function renderComplaints(complaints) {
+            const container = document.getElementById('complaintList');
+            const noResults = document.getElementById('noResults');
+            const t = translations[window.currentLang];
+            container.innerHTML = '';
+
+            if (complaints.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            complaints.forEach(complaint => {
+                const tagText = getCategoryTag(complaint.category);
+                const cardColorClass = getCardColor(complaint.category);
+                const statusText = getStatusText(complaint.status);
+                const statusColor = getStatusColor(complaint.status);
+                
+                const card = document.createElement('div');
+                card.className = `p-5 border-l-8 ${cardColorClass} rounded-xl shadow-md transition duration-300 hover:shadow-lg`;
+                
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <div class="mb-3 md:mb-0">
+                            <h3 class="text-xl font-bold text-gray-800">${complaint.school} (${complaint.district})
+                                <span class="ml-3 inline-block px-3 py-1 text-xs font-semibold rounded-full text-white ${statusColor}">
+                                    ${statusText}
+                                </span>
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <span class="font-semibold">${t.card_id}:</span> ${complaint.id} | 
+                                <span class="font-semibold">${t.card_date}:</span> ${complaint.date}
+                            </p>
+                        </div>
+                        <a href="survey.html?id=${complaint.id}" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-full hover:bg-indigo-700 transition duration-300 flex items-center shadow-md mt-2 md:mt-0">
+                            <i data-lucide="check-circle" class="w-4 h-4 mr-2"></i>
+                            ${t.card_button}
+                        </a>
+                    </div>
+                    <div class="mt-3 border-t pt-3">
+                        <p class="text-lg font-semibold text-gray-700">
+                            ${t.card_issue}: <span class="font-normal text-gray-600">${complaint.issue}</span>
+                        </p>
+                        <p class="text-lg font-semibold text-gray-700 mt-1">
+                            ${t.card_action_req}: <span class="font-normal text-gray-600">${complaint.action}</span>
+                        </p>
+                        <p class="text-md font-semibold text-gray-700 mt-1">
+                            ${t.filter_priority}: <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">${tagText}</span>
+                        </p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+        
+        // Ensure initial filter and rendering happens after Firebase is set up or on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const loading = document.getElementById('loadingIndicator');
+            loading.classList.remove('hidden'); // Show loading indicator initially
+            
+            // Since onSnapshot handles initial load and updates, we just need to ensure the filters are rendered correctly initially.
+            // onSnapshot will call applyFilters(), which in turn calls renderComplaints()
+            
+            // If Firebase is not configured, we manually hide loading and show No Results
+            if (typeof window.db === 'undefined') {
+                 loading.classList.add('hidden');
+                 document.getElementById('noResults').classList.remove('hidden');
+            }
+        });
+
+        // Set up global functions needed for the filter UI
+        window.applyFilters = applyFilters;
+        window.toggleLang = toggleLang;
+    </script>
+</body>
+</html>

@@ -37,65 +37,15 @@
     .navbar a:hover {
       color: #facc15; /* Yellow-400 */
     }
-    .hero {
-      background: url('school-bg.jpg') center/cover no-repeat;
-      position: relative;
-      height: 80vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
-    }
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    .hero-content {
-      position: relative;
-      z-index: 10;
-      max-width: 700px;
-    }
-    .hero-content h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-    }
-    .hero-content p {
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
-    }
-    .hero-content button {
-      background-color: #facc15;
-      color: #1e3a8a;
-      font-weight: bold;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .hero-content button:hover {
-      background-color: #fde047;
-    }
-    footer {
-      background-color: #1e293b;
-      color: #cbd5e1;
-      text-align: center;
-      padding: 1rem;
-    }
   </style>
 </head>
 
 <body onload="lucide.createIcons()">
-
-  <!-- ✅ Navbar -->
+  <!-- Navbar -->
   <header class="navbar">
     <div class="logo flex items-center">
       <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
-      <h2 class="text-xl font-bold">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+      <h2 class="text-xl font-bold font-['Hind Siliguri']">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
     </div>
     <nav>
       <ul>
@@ -103,25 +53,24 @@
         <li><a href="status.html">स्कूल स्थिति</a></li>
         <li><a href="report.html">रिपोर्ट</a></li>
         <li><a href="contact.html">संपर्क करें</a></li>
-        <li><a href="team.html">Team</a></li>
+        <li><a href="team.html">टीम</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- ✅ Hero Section -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="overlay"></div>
     <div class="hero-content">
       <h1>स्मार्ट विद्यालय निगरानी पोर्टल</h1>
       <p>AI एवं IoT तकनीक के माध्यम से हर विद्यालय को आवश्यक सुविधाएँ उपलब्ध कराना।</p>
-      <button onclick="window.location.href='status.html'">अधिक जानें</button>
+      <button onclick="window.location.href='about.html'">अधिक जानें</button>
     </div>
   </section>
 
-  <!-- ✅ Footer -->
+  <!-- Footer -->
   <footer>
     <p>© 2025 उत्तर प्रदेश सरकार | स्मार्ट स्कूल मॉनिटरिंग पहल</p>
   </footer>
-
 </body>
 </html>

@@ -1,139 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>School Infrastructure Monitoring</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 
-  <!-- Optional icons -->
+  <!-- Tailwind and Lucide for modern look -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', 'Hind Siliguri', sans-serif;
+    }
+    .navbar {
+      background-color: #1e3a8a; /* Indigo-900 */
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .navbar a:hover {
+      color: #facc15; /* Yellow-400 */
+    }
+    .lang-btn {
+      background-color: #facc15;
+      color: #1e3a8a;
+      font-weight: bold;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body onload="lucide.createIcons()">
 
-  <!-- ✅ Navbar -->
+  <!-- Navbar -->
   <header class="navbar">
     <div class="logo">
-      <img src="logo.png" alt="Logo" />
-      <h2 id="navTitle">School Infra Portal</h2>
+      <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+      <h2 class="text-xl font-bold font-['Hind Siliguri']" id="title-text">
+       इन्फ्रासाइट-विद्यालय अवसंरचना निगरानी प्रणाली
+      </h2>
     </div>
-    <ul id="navLinks">
-      <li><a id="navHome" href="index.html">Home</a></li>
-      <li><a id="navStatus" href="status.html">Status</a></li>
-      <li><a id="navReport" href="report.html">Report</a></li>
-      <li><a id="navContact" href="contact.html">Contact</a></li>
-      <li><a id="navContact" href="team.html">Team</a></li>
-    </ul>
 
-    <!-- Language Selector -->
-    <div class="language-switcher">
-      <select id="languageSelect" onchange="changeLanguage()">
-        <option value="en">English</option>
-        <option value="hi">हिन्दी</option>
-      </select>
+    <div class="navbar-right">
+      <nav>
+        <ul id="nav-links">
+          <li><a href="home.html">मुखपृष्ठ</a></li>
+          <li><a href="status.html">स्कूल स्थिति</a></li>
+          <li><a href="report.html">रिपोर्ट</a></li>
+          <li><a href="contact.html">संपर्क करें</a></li>
+          <li><a href="team.html">टीम</a></li>
+
+        </ul>
+      </nav>
+      <button class="lang-btn" onclick="toggleLang()">EN</button>
     </div>
   </header>
 
-  <!-- ✅ Hero Section -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="overlay"></div>
     <div class="hero-content">
-      <h1 id="heroHeading">School Infrastructure Monitoring Portal</h1>
-      <p id="heroText">Ensuring every school gets the facilities it deserves</p>
-      <button onclick="scrollToSection()">Learn More</button>
+      <h1 id="hero-heading">Infrasight-School Infrastructure Monitoring Portal</h1>
+      <p id="hero-text">Ensuring every school gets the facilities it deserves</p>
+      <button onclick="window.location.href='about.html'">Learn More</button>
     </div>
   </section>
 
-  <!-- ✅ Features Section -->
+  <!-- Features Section -->
   <section class="features" id="features">
-    <div class="card red">
-      <h3 id="feature1Title">Upload School Images</h3>
-      <p id="feature1Text">Citizens can upload school condition photos for review.</p>
-    </div>
 
-    <div class="card orange">
-      <h3 id="feature2Title">Check School Status</h3>
-      <p id="feature2Text">View which schools need immediate attention.</p>
-    </div>
+    <a href="report.html" class="card red">
+      <h3 id="feature1-title">Upload School Images</h3>
+      <p id="feature1-text">Citizens can upload school condition photos for review.</p>
+    </a>
 
-    <div class="card blue">
-      <h3 id="feature3Title">Official Survey Report</h3>
-      <p id="feature3Text">Officers verify data and upload live photos with GPS.</p>
-    </div>
+    <a href="status.html" class="card orange">
+      <h3 id="feature2-title">Check School Status</h3>
+      <p id="feature2-text">View which schools need immediate attention.</p>
+    </a>
 
-    <div class="card purple">
-      <h3 id="feature4Title">Feedback & Transparency</h3>
-      <p id="feature4Text">Public can view government actions and provide feedback.</p>
-    </div>
+    <a href="survey.html" class="card blue">
+      <h3 id="feature3-title">Official Survey Report</h3>
+      <p id="feature3-text">Officers verify data and upload live photos with GPS.</p>
+    </a>
+
+    <a href="feedback.html" class="card purple">
+      <h3 id="feature4-title">Feedback & Transparency</h3>
+      <p id="feature4-text">Public can view government actions and provide feedback.</p>
+    </a>
+
   </section>
 
-  <!-- ✅ Footer -->
+  <!-- Footer -->
   <footer>
-    <p>© 2025 | AI & IoT Monitoring Initiative</p>
+    <p>© 2025 Infrasight | AI & IoT Monitoring Initiative</p>
   </footer>
 
-  <!-- ✅ Script for Language Change -->
   <script>
+    let lang = 'hi';
     const translations = {
       en: {
-        navTitle: "School Infra Portal",
-        navHome: "Home",
-        navStatus: "Status",
-        navReport: "Report",
-        navContact: "Contact",
+        title: "School Infrastructure Monitoring System",
+        nav: ["Home", "School Status", "Report", "Contact","Team"],
         heroHeading: "School Infrastructure Monitoring Portal",
         heroText: "Ensuring every school gets the facilities it deserves",
-        feature1Title: "Upload School Images",
-        feature1Text: "Citizens can upload school condition photos for review.",
-        feature2Title: "Check School Status",
-        feature2Text: "View which schools need immediate attention.",
-        feature3Title: "Official Survey Report",
-        feature3Text: "Officers verify data and upload live photos with GPS.",
-        feature4Title: "Feedback & Transparency",
-        feature4Text: "Public can view government actions and provide feedback."
+        features: [
+          ["Upload School Images", "Citizens can upload school condition photos for review."],
+          ["Check School Status", "View which schools need immediate attention."],
+          ["Official Survey Report", "Officers verify data and upload live photos with GPS."],
+          ["Feedback & Transparency", "Public can view government actions and provide feedback."]
+        ]
       },
       hi: {
-        navTitle: "विद्यालय अवसंरचना पोर्टल",
-        navHome: "मुखपृष्ठ",
-        navStatus: "स्कूल स्थिति",
-        navReport: "रिपोर्ट",
-        navContact: "संपर्क करें",
+        title: "विद्यालय अवसंरचना निगरानी प्रणाली",
+        nav: ["मुखपृष्ठ", "स्कूल स्थिति", "रिपोर्ट", "संपर्क करें","टीम"],
         heroHeading: "विद्यालय अवसंरचना निगरानी पोर्टल",
         heroText: "सुनिश्चित करें कि प्रत्येक विद्यालय को उचित सुविधाएँ प्राप्त हों",
-        feature1Title: "विद्यालय की छवियाँ अपलोड करें",
-        feature1Text: "नागरिक समीक्षा के लिए विद्यालय की स्थिति की तस्वीरें अपलोड कर सकते हैं।",
-        feature2Title: "स्कूल स्थिति जांचें",
-        feature2Text: "देखें किन विद्यालयों को तत्काल ध्यान की आवश्यकता है।",
-        feature3Title: "आधिकारिक सर्वेक्षण रिपोर्ट",
-        feature3Text: "अधिकारी डेटा सत्यापित करते हैं और जीपीएस के साथ लाइव फोटो अपलोड करते हैं।",
-        feature4Title: "प्रतिक्रिया एवं पारदर्शिता",
-        feature4Text: "जनता सरकारी कार्यों को देख सकती है और प्रतिक्रिया दे सकती है।"
+        features: [
+          ["विद्यालय की छवियाँ अपलोड करें", "नागरिक समीक्षा के लिए विद्यालय की स्थिति की तस्वीरें अपलोड कर सकते हैं।"],
+          ["स्कूल स्थिति जांचें", "देखें किन विद्यालयों को तत्काल ध्यान की आवश्यकता है।"],
+          ["आधिकारिक सर्वेक्षण रिपोर्ट", "अधिकारी डेटा सत्यापित करते हैं और जीपीएस के साथ लाइव फोटो अपलोड करते हैं।"],
+          ["प्रतिक्रिया एवं पारदर्शिता", "जनता सरकारी कार्यों को देख सकती है और प्रतिक्रिया दे सकती है।"]
+        ]
       }
     };
 
-    function changeLanguage() {
-      const lang = document.getElementById("languageSelect").value;
+    function toggleLang() {
+      lang = lang === 'hi' ? 'en' : 'hi';
       const t = translations[lang];
-
-      document.getElementById("navTitle").innerText = t.navTitle;
-      document.getElementById("navHome").innerText = t.navHome;
-      document.getElementById("navStatus").innerText = t.navStatus;
-      document.getElementById("navReport").innerText = t.navReport;
-      document.getElementById("navContact").innerText = t.navContact;
-      document.getElementById("heroHeading").innerText = t.heroHeading;
-      document.getElementById("heroText").innerText = t.heroText;
-      document.getElementById("feature1Title").innerText = t.feature1Title;
-      document.getElementById("feature1Text").innerText = t.feature1Text;
-      document.getElementById("feature2Title").innerText = t.feature2Title;
-      document.getElementById("feature2Text").innerText = t.feature2Text;
-      document.getElementById("feature3Title").innerText = t.feature3Title;
-      document.getElementById("feature3Text").innerText = t.feature3Text;
-      document.getElementById("feature4Title").innerText = t.feature4Title;
-      document.getElementById("feature4Text").innerText = t.feature4Text;
-    }
-
-    function scrollToSection() {
-      document.getElementById("features").scrollIntoView({ behavior: "smooth" });
+      document.getElementById('title-text').innerText = t.title;
+      document.querySelectorAll('#nav-links li a').forEach((a, i) => a.innerText = t.nav[i]);
+      document.getElementById('hero-heading').innerText = t.heroHeading;
+      document.getElementById('hero-text').innerText = t.heroText;
+      for (let i = 0; i < 4; i++) {
+        document.getElementById(`feature${i+1}-title`).innerText = t.features[i][0];
+        document.getElementById(`feature${i+1}-text`).innerText = t.features[i][1];
+      }
+      document.querySelector('.lang-btn').innerText = lang === 'hi' ? 'EN' : 'HI';
     }
   </script>
 

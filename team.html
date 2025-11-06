@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Our Team | Infrasight</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
     body {
@@ -20,75 +21,210 @@
       transform: translateY(-10px);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
+
+    .navbar {
+      background-color: #1e1b4b;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      flex-wrap: nowrap;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    .navbar-right ul {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      align-items: center;
+      margin: 0;
+    }
+
+    .navbar-right ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .navbar-right ul li a:hover {
+      color: #fde047;
+    }
+
+    .lang-btn {
+      background-color: #fde047;
+      color: #1e1b4b;
+      padding: 0.3rem 0.8rem;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-left: 1rem;
+      transition: background-color 0.3s;
+      white-space: nowrap;
+    }
+
+    .lang-btn:hover {
+      background-color: #facc15;
+    }
+
+    .lang-hi {
+      display: none;
+      font-family: 'Hind Siliguri', sans-serif;
+    }
   </style>
 </head>
 
 <body class="bg-gradient-to-br from-indigo-50 via-white to-indigo-100 text-gray-800">
 
-  <!-- Header -->
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+      <h2 class="text-xl font-bold" id="title-text">
+        <span class="lang-en">Infrasight – School Infrastructure Monitoring System</span>
+        <span class="lang-hi">इन्फ्रासाइट – विद्यालय अवसंरचना निगरानी प्रणाली</span>
+      </h2>
+    </div>
+
+    <div class="navbar-right">
+      <nav>
+        <ul id="nav-links">
+          <li><a href="home.html" class="lang-en">Home</a><a href="home.html" class="lang-hi">मुखपृष्ठ</a></li>
+          <li><a href="status.html" class="lang-en">School Status</a><a href="status.html" class="lang-hi">स्कूल स्थिति</a></li>
+          <li><a href="report.html" class="lang-en">Report</a><a href="report.html" class="lang-hi">रिपोर्ट</a></li>
+          <li><a href="contact.html" class="lang-en">Contact</a><a href="contact.html" class="lang-hi">संपर्क करें</a></li>
+          <li><a href="team.html" class="lang-en">Team</a><a href="team.html" class="lang-hi">टीम</a></li>
+        </ul>
+      </nav>
+      <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">HI</button>
+    </div>
+  </header>
+
+  <!-- Page Header -->
   <header class="bg-indigo-900 text-white py-8 shadow-lg text-center">
-    <h1 class="text-4xl font-bold tracking-wide">Meet Our Team</h1>
+    <h1 class="text-4xl font-bold tracking-wide">
+      <span class="lang-en">Meet Our Team</span>
+      <span class="lang-hi">हमारी टीम से मिलिए</span>
+    </h1>
     <p class="text-indigo-200 mt-3 text-lg max-w-2xl mx-auto">
-      <span class="text-yellow-300 font-semibold">INFRASIGHT</span> — Building Intelligent Solutions for Smarter Schools
+      <span class="lang-en"><span class="text-yellow-300 font-semibold">INFRASIGHT</span> — Building Intelligent Solutions for Smarter Schools</span>
+      <span class="lang-hi"><span class="text-yellow-300 font-semibold">इन्फ्रासाइट</span> — स्मार्ट विद्यालयों के लिए बुद्धिमान समाधान तैयार करना</span>
     </p>
   </header>
 
   <!-- Team Section -->
   <section class="py-16 px-6 max-w-6xl mx-auto text-center">
 
-    <!-- Row 1: Ananya, Aparna, Aakriti -->
     <div class="flex flex-wrap justify-center gap-10 mb-12">
       
       <!-- Ananya -->
       <div class="team-card bg-white rounded-2xl shadow-md p-6 w-72">
         <img src="image/ananya.jpeg" alt="Ananya Verma" class="w-44 h-44 mx-auto rounded-full border-4 border-indigo-400 mb-4 object-cover">
-        <h2 class="text-2xl font-bold text-indigo-700">Ananya Verma</h2>
-        <p class="text-gray-600 font-medium">Leader — Cloud & IoT</p>
-        <p class="italic text-gray-500 text-sm mt-3">"Leadership is turning ideas into innovation and people into purpose."</p>
+        <h2 class="text-2xl font-bold text-indigo-700">
+          <span class="lang-en">Ananya Verma</span>
+          <span class="lang-hi">अनन्या वर्मा</span>
+        </h2>
+        <p class="text-gray-600 font-medium lang-en">Leader — AI & IoT</p>
+        <p class="text-gray-600 font-medium lang-hi">नेता — एआई और आईओटी</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-en">"Leadership is turning ideas into innovation and people into purpose."</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-hi">"नेतृत्व विचारों को नवाचार और लोगों को उद्देश्य में बदलने की कला है।"</p>
       </div>
 
       <!-- Aparna -->
       <div class="team-card bg-white rounded-2xl shadow-md p-6 w-72">
         <img src="image/aparna.jpeg" alt="Aparna Singh" class="w-44 h-44 mx-auto rounded-full border-4 border-indigo-400 mb-4 object-cover">
-        <h2 class="text-2xl font-bold text-indigo-700">Aparna Singh</h2>
-        <p class="text-gray-600 font-medium">Web Developer (UI & UX)</p>
-        <p class="italic text-gray-500 text-sm mt-3">"Design is the art of making technology feel human and effortless."</p>
+        <h2 class="text-2xl font-bold text-indigo-700">
+          <span class="lang-en">Aparna Singh</span>
+          <span class="lang-hi">अपर्णा सिंह</span>
+        </h2>
+        <p class="text-gray-600 font-medium lang-en">Web Developer (UI & UX)</p>
+        <p class="text-gray-600 font-medium lang-hi">वेब डेवलपर (यूआई एवं यूएक्स)</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-en">"Design is intelligence made visible."</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-hi">"डिज़ाइन वह बुद्धिमत्ता है जो दिखाई देती है।"</p>
       </div>
 
       <!-- Aakriti -->
       <div class="team-card bg-white rounded-2xl shadow-md p-6 w-72">
         <img src="image/aakriti.jpeg" alt="Aakriti Gaur" class="w-44 h-44 mx-auto rounded-full border-4 border-indigo-400 mb-4 object-cover">
-        <h2 class="text-2xl font-bold text-indigo-700">Aakriti Gaur</h2>
-        <p class="text-gray-600 font-medium">Database Manager</p>
-        <p class="italic text-gray-500 text-sm mt-3">"Organized data creates the foundation of every smart decision."</p>
+        <h2 class="text-2xl font-bold text-indigo-700">
+          <span class="lang-en">Aakriti Gaur</span>
+          <span class="lang-hi">आकृति गौड़</span>
+        </h2>
+        <p class="text-gray-600 font-medium lang-en">Database Manager</p>
+        <p class="text-gray-600 font-medium lang-hi">डेटाबेस प्रबंधक</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-en">"Data is the backbone of every great innovation."</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-hi">"डेटा हर महान नवाचार की रीढ़ है।"</p>
       </div>
     </div>
 
-    <!-- Row 2: Kali, Aniket -->
     <div class="flex flex-wrap justify-center gap-10">
       
       <!-- Kali -->
       <div class="team-card bg-white rounded-2xl shadow-md p-6 w-72">
         <img src="image/kali.jpeg" alt="Kali Pandey" class="w-44 h-44 mx-auto rounded-full border-4 border-indigo-400 mb-4 object-cover">
-        <h2 class="text-2xl font-bold text-indigo-700">Kali Pandey</h2>
-        <p class="text-gray-600 font-medium">Image Processing Specialist</p>
-        <p class="italic text-gray-500 text-sm mt-3">"Every pixel tells a story — precision and vision make it meaningful."</p>
+        <h2 class="text-2xl font-bold text-indigo-700">
+          <span class="lang-en">Kali Pandey</span>
+          <span class="lang-hi">कली पांडेय</span>
+        </h2>
+        <p class="text-gray-600 font-medium lang-en">Image Processing Specialist</p>
+        <p class="text-gray-600 font-medium lang-hi">इमेज प्रोसेसिंग विशेषज्ञ</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-en">"Every pixel tells a story when seen through precision."</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-hi">"हर पिक्सल एक कहानी कहता है जब उसे सटीकता से देखा जाए।"</p>
       </div>
 
       <!-- Aniket -->
       <div class="team-card bg-white rounded-2xl shadow-md p-6 w-72">
         <img src="image/aniket.jpeg" alt="Aniket Mishra" class="w-44 h-44 mx-auto rounded-full border-4 border-indigo-400 mb-4 object-cover">
-        <h2 class="text-2xl font-bold text-indigo-700">Aniket Mishra</h2>
-        <p class="text-gray-600 font-medium">PPT, Communication & Web</p>
-        <p class="italic text-gray-500 text-sm mt-3">"Great communication turns innovation into inspiration."</p>
+        <h2 class="text-2xl font-bold text-indigo-700">
+          <span class="lang-en">Aniket Mishra</span>
+          <span class="lang-hi">अनिकेत मिश्रा</span>
+        </h2>
+        <p class="text-gray-600 font-medium lang-en">Project Documentation</p>
+        <p class="text-gray-600 font-medium lang-hi">प्रोजेक्ट प्रलेखन</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-en">"Good documentation makes every project timeless."</p>
+        <p class="italic text-gray-500 text-sm mt-3 lang-hi">"अच्छा प्रलेखन हर प्रोजेक्ट को कालातीत बना देता है।"</p>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="bg-indigo-900 text-gray-200 text-center py-6">
-    <p>© 2025 Infrasight Team — PSIT Kanpur</p>
+    <p class="lang-en">© 2025 Infrasight Team — PSIT Kanpur</p>
+    <p class="lang-hi">© 2025 इन्फ्रासाइट टीम — पीएसआईटी कानपुर</p>
   </footer>
 
+  <script>
+    lucide.createIcons();
+    let currentLang = 'en';
+
+    function toggleLang() {
+      const enTexts = document.querySelectorAll('.lang-en');
+      const hiTexts = document.querySelectorAll('.lang-hi');
+      const btn = document.getElementById('lang-toggle');
+
+      if (currentLang === 'en') {
+        enTexts.forEach(el => el.style.display = 'none');
+        hiTexts.forEach(el => el.style.display = 'inline');
+        currentLang = 'hi';
+        btn.textContent = 'EN';
+      } else {
+        enTexts.forEach(el => el.style.display = 'inline');
+        hiTexts.forEach(el => el.style.display = 'none');
+        currentLang = 'en';
+        btn.textContent = 'HI';
+      }
+    }
+  </script>
 </body>
 </html>

@@ -41,26 +41,6 @@ body {
   text-decoration: underline;
 }
 
-.language-switcher {
-  margin-left: 20px;
-}
-
-.language-switcher select {
-  background-color: white;
-  color: #0078d7;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  transition: background 0.3s;
-}
-
-.language-switcher select:hover {
-  background-color: #e8f0fe;
-}
-
 /* Hero */
 .hero {
   position: relative;
@@ -122,19 +102,19 @@ body {
 /* ✅ Features Section */
 .features {
   display: flex;
-  justify-content: center;
+  justify-content: center;      /* center horizontally */
   align-items: stretch;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap;            /* ✅ keeps 4 cards in one line */
   gap: 25px;
   padding: 60px 20px;
   background: #f4f6f8;
-  overflow-x: auto;
+  overflow-x: auto;             /* ✅ allows horizontal scroll on small screens */
 }
 
 .card {
   position: relative;
   flex: 1;
-  min-width: 22%;
+  min-width: 22%;               /* ✅ 4 cards fit in one row */
   max-width: 300px;
   height: 260px;
   color: white;

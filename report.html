@@ -14,41 +14,23 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap');
-    body {
-      font-family: 'Inter', 'Hind Siliguri', sans-serif;
-      background-color: #f8fafc;
-    }
-    .navbar {
-      background-color: #1e3a8a;
-    }
-    #map {
-      height: 350px;
-      width: 100%;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    #video-stream {
-      width: 100%;
-      max-width: 400px;
-      display: none;
-      border-radius: 10px;
-      margin: auto;
-      background: #000;
-    }
-    #capture-canvas {
-      display: none;
-    }
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
+    .navbar { background-color: #1e3a8a; }
+    #map { height: 350px; width: 100%; border-radius: 10px; margin-top: 10px; }
+    #video-stream { width: 100%; max-width: 400px; display: none; border-radius: 10px; margin: auto; background: #000; }
+    #capture-canvas { display: none; }
   </style>
 </head>
-
 <body onload="lucide.createIcons();">
 
-  <!-- 🌐 Header -->
+  <!-- Header -->
   <header class="navbar p-4 text-white shadow-lg">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
       <div class="logo flex items-center mb-3 md:mb-0">
         <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
-        <h2 class="text-xl font-bold">Infrasight | विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+        <h2 class="text-xl font-bold font-['Hind Siliguri']" id="title-text">
+         इन्फ्रासाइट-विद्यालय अवसंरचना निगरानी प्रणाली
+      </h2>
       </div>
       <div class="flex items-center space-x-4">
         <select id="langSelect" class="p-2 text-black rounded-md">
@@ -61,14 +43,14 @@
             <li><a href="status.html" class="hover:text-yellow-300">स्थिति</a></li>
             <li><a href="report.html" class="text-yellow-300 border-b-2 border-yellow-300">रिपोर्ट</a></li>
             <li><a href="contact.html" class="hover:text-yellow-300">संपर्क</a></li>
-            <li><a href="team.html" class="hover:text-yellow-300">Team</a></li>
+            <li><a href="team.html"  class="hover:text-yellow-300">टीम</a></li>
           </ul>
         </nav>
       </div>
     </div>
   </header>
 
-  <!-- 📋 Report Form -->
+  <!-- Report Form -->
   <section class="max-w-3xl mx-auto p-6 md:p-8 bg-white my-10 rounded-xl shadow-2xl">
     <h1 id="form-title" class="text-3xl font-extrabold text-indigo-700 mb-2">स्कूल की स्थिति की रिपोर्ट करें</h1>
     <p id="form-desc" class="text-gray-600 mb-6">कृपया नीचे दिए गए विवरण भरें ताकि सरकार स्थिति की जांच कर सके।</p>
@@ -89,7 +71,7 @@
         <textarea id="details" rows="4" class="w-full p-3 border rounded-lg" placeholder="समस्या का विवरण..." required></textarea>
       </div>
 
-      <!-- 🎥 Webcam Capture -->
+      <!-- Webcam Capture -->
       <div class="pt-4 border-t border-gray-200">
         <label id="label-photo" class="block text-sm font-bold text-gray-700 mb-2">लाइव तस्वीर कैप्चर करें:</label>
 
@@ -113,7 +95,7 @@
         <input type="hidden" id="captured_image_data" required>
       </div>
 
-      <!-- 🗺️ Location -->
+      <!-- Location -->
       <div class="pt-4 border-t border-gray-200">
         <label id="label-location" class="block text-sm font-medium text-gray-700 mb-1">स्थान जोड़ें (मानचित्र पर क्लिक करें):</label>
         <div id="map"></div>
@@ -131,7 +113,7 @@
     </form>
   </section>
 
-  <!-- 🦶 Footer -->
+  <!-- Footer -->
   <footer class="p-8 text-center bg-gray-800 text-gray-300">
     <p>© 2025 Infrasight | Government of Uttar Pradesh | AI & IoT Initiative</p>
   </footer>
@@ -178,7 +160,7 @@
     startBtn.addEventListener('click', startWebcam);
     captureBtn.addEventListener('click', capturePhoto);
 
-    // 🗺️ Leaflet map
+    // Leaflet map
     const map = L.map('map').setView([26.8467, 80.9462], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
@@ -191,7 +173,7 @@
       document.getElementById('longitude').value = e.latlng.lng.toFixed(5);
     });
 
-    // 🌐 Language switch
+    // Language switch
     const translations = {
       hi: {
         "form-title": "स्कूल की स्थिति की रिपोर्ट करें",
@@ -223,4 +205,4 @@
     });
   </script>
 </body>
-</html>
+</html> save this code with you 

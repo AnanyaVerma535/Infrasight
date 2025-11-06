@@ -1,97 +1,35 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">संपर्क करें | इन्फ्रासाइट - विद्यालय अवसंरचना निगरानी प्रणाली</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="contact.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">संपर्क करें | इन्फ्रासाइट</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Inter', 'Hind Siliguri', sans-serif;
-    }
-    .navbar {
-      background-color: #1e3a8a;
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .navbar ul {
-      display: flex;
-      list-style: none;
-      gap: 1.5rem;
-      margin: 0;
-    }
-    .navbar a {
-      color: white;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .navbar a:hover {
-      color: #facc15;
-    }
-    .lang-btn {
-      background-color: #facc15;
-      color: #1e3a8a;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    footer {
-      background-color: #1e293b;
-      color: #cbd5e1;
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 600px;
-      margin: auto;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 5px;
-    }
-    button[type="submit"] {
-      background-color: #1e3a8a;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button[type="submit"]:hover {
-      background-color: #3746c1;
-    }
-  </style>
+  <link rel="stylesheet" href="contact.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
-<body onload="loadLanguage()">
+<body onload="loadLanguage()" class="bg-gradient-to-br from-indigo-950 via-indigo-800 to-indigo-600 text-white font-['Hind_Siliguri'] min-h-screen">
 
-  <!-- ✅ Navbar -->
+  <!-- ✅ Header -->
   <header class="navbar">
-    <div class="flex items-center gap-3">
-      <img src="logo.png" alt="Logo" class="w-10 h-10">
-      <h2 id="title-text">इन्फ्रासाइट - विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+    <div class="logo flex items-center">
+      <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+      <h2 class="text-xl font-bold" id="title-text">
+        इन्फ्रासाइट-विद्यालय अवसंरचना निगरानी प्रणाली
+      </h2>
     </div>
-    <div class="flex items-center gap-4">
+
+    <div class="navbar-right flex items-center gap-5">
       <nav>
-        <ul>
-          <li><a id="nav-home" href="index.html">मुखपृष्ठ</a></li>
-          <li><a id="nav-status" href="status.html">स्कूल स्थिति</a></li>
-          <li><a id="nav-report" href="report.html">रिपोर्ट</a></li>
-          <li><a id="nav-contact" href="contact.html" class="active">संपर्क करें</a></li>
-          <li><a id="nav-team" href="team.html">Team</a></li>
+        <ul id="nav-links" class="flex gap-6 list-none">
+          <li><a href="home.html">मुखपृष्ठ</a></li>
+          <li><a href="status.html">स्कूल स्थिति</a></li>
+          <li><a href="report.html">रिपोर्ट</a></li>
+          <li><a href="contact.html" class="active">संपर्क करें</a></li>
+          <li><a href="team.html">टीम</a></li>
         </ul>
       </nav>
       <button id="lang-btn" class="lang-btn" onclick="toggleLang()">EN</button>
@@ -99,59 +37,62 @@
   </header>
 
   <!-- ✅ Contact Section -->
-  <section class="contact-section text-center p-8">
-    <h1 id="contact-heading" class="text-3xl font-bold text-indigo-800 mb-4">संपर्क करें</h1>
-    <p id="contact-text" class="text-gray-600 mb-8">अगर आपके पास कोई सुझाव या शिकायत है, तो कृपया नीचे दिए गए फॉर्म के माध्यम से संपर्क करें।</p>
+  <section class="contact-wrapper">
+    <div class="contact-container">
+      <h1 id="contact-heading">हमसे संपर्क करें</h1>
+      <p id="contact-text">यदि आपके पास कोई सुझाव या प्रश्न हैं, कृपया नीचे दिए गए फॉर्म का उपयोग करें।</p>
 
-    <form class="contact-form">
-      <label id="name-label" for="name">नाम:</label>
-      <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required>
+      <form class="contact-form">
+        <label id="name-label" for="name">नाम</label>
+        <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required />
 
-      <label id="email-label" for="email">ईमेल:</label>
-      <input type="email" id="email" placeholder="अपना ईमेल दर्ज करें" required>
+        <label id="email-label" for="email">ईमेल</label>
+        <input type="email" id="email" placeholder="अपना ईमेल दर्ज करें" required />
 
-      <label id="message-label" for="message">संदेश:</label>
-      <textarea id="message" rows="4" placeholder="अपना संदेश यहाँ लिखें..." required></textarea>
+        <label id="message-label" for="message">संदेश</label>
+        <textarea id="message" rows="4" placeholder="अपना संदेश यहाँ लिखें..." required></textarea>
 
-      <button id="submit-btn" type="submit">भेजें</button>
-    </form>
+        <button id="submit-btn" type="submit">भेजें</button>
+      </form>
+    </div>
   </section>
 
   <!-- ✅ Footer -->
-  <footer>
-    <p id="footer-text">© 2025 उत्तर प्रदेश सरकार | AI एवं IoT आधारित विद्यालय मॉनिटरिंग पहल</p>
+  <footer class="footer">
+    <p id="footer-text">© 2025 इन्फ्रासाइट टीम — AI एवं IoT आधारित विद्यालय मॉनिटरिंग पहल</p>
   </footer>
 
-  <!-- ✅ Language Script -->
   <script>
+    lucide.createIcons();
+
     const translations = {
       hi: {
-        title: "इन्फ्रासाइट - विद्यालय अवसंरचना निगरानी प्रणाली",
-        nav: ["मुखपृष्ठ", "स्कूल स्थिति", "रिपोर्ट", "संपर्क करें"],
-        contactHeading: "संपर्क करें",
-        contactText: "अगर आपके पास कोई सुझाव या शिकायत है, तो कृपया नीचे दिए गए फॉर्म के माध्यम से संपर्क करें।",
-        nameLabel: "नाम:",
-        emailLabel: "ईमेल:",
-        messageLabel: "संदेश:",
+        title: "इन्फ्रासाइट-विद्यालय अवसंरचना निगरानी प्रणाली",
+        nav: ["मुखपृष्ठ", "स्कूल स्थिति", "रिपोर्ट", "संपर्क करें", "टीम"],
+        contactHeading: "हमसे संपर्क करें",
+        contactText: "यदि आपके पास कोई सुझाव या प्रश्न हैं, कृपया नीचे दिए गए फॉर्म का उपयोग करें।",
+        nameLabel: "नाम",
+        emailLabel: "ईमेल",
+        messageLabel: "संदेश",
         namePlaceholder: "अपना नाम दर्ज करें",
         emailPlaceholder: "अपना ईमेल दर्ज करें",
         messagePlaceholder: "अपना संदेश यहाँ लिखें...",
         submitBtn: "भेजें",
-        footerText: "© 2025 उत्तर प्रदेश सरकार | AI एवं IoT आधारित विद्यालय मॉनिटरिंग पहल"
+        footerText: "© 2025 इन्फ्रासाइट टीम — AI एवं IoT आधारित विद्यालय मॉनिटरिंग पहल",
       },
       en: {
         title: "Infrasight - School Infrastructure Monitoring System",
-        nav: ["Home", "School Status", "Report", "Contact"],
+        nav: ["Home", "School Status", "Report", "Contact", "Team"],
         contactHeading: "Contact Us",
-        contactText: "If you have any suggestions or complaints, please contact us using the form below.",
-        nameLabel: "Name:",
-        emailLabel: "Email:",
-        messageLabel: "Message:",
+        contactText: "If you have any questions or suggestions, please use the form below.",
+        nameLabel: "Name",
+        emailLabel: "Email",
+        messageLabel: "Message",
         namePlaceholder: "Enter your name",
         emailPlaceholder: "Enter your email",
         messagePlaceholder: "Write your message here...",
-        submitBtn: "Submit",
-        footerText: "© 2025 Government of Uttar Pradesh | AI & IoT Based School Monitoring Initiative"
+        submitBtn: "Send",
+        footerText: "© 2025 Infrasight Team — AI & IoT Based School Monitoring Initiative",
       }
     };
 
@@ -171,7 +112,6 @@
       const t = translations[lang];
       document.documentElement.lang = lang;
       document.getElementById("title-text").innerText = t.title;
-      document.getElementById("page-title").innerText = `${t.contactHeading} | ${t.title}`;
       document.querySelectorAll("nav ul li a").forEach((a, i) => (a.innerText = t.nav[i]));
       document.getElementById("contact-heading").innerText = t.contactHeading;
       document.getElementById("contact-text").innerText = t.contactText;

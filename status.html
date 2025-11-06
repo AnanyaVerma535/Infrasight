@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InfraSight | विद्यालय स्थिति</title>
-
+  
   <!-- Tailwind & Lucide -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -27,23 +27,26 @@
     }
   </style>
 </head>
-
 <body onload="lucide.createIcons()">
 
-  <!-- 🧭 Navbar -->
+  <!-- Navbar -->
   <header class="bg-indigo-900 shadow-xl text-white p-4 sticky top-0 z-10">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
       <div class="logo flex items-center mb-4 md:mb-0">
         <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
-        <h2 id="title-text" class="text-xl font-bold">इन्फ्रासाइट: विद्यालय अवसंरचना निगरानी प्रणाली</h2>
+        <h2 id="title-text" class="text-xl font-bold font-['Hind Siliguri']">इन्फ्रासाइट: विद्यालय अवसंरचना निगरानी प्रणाली</h2>
       </div>
       <div class="flex items-center">
         <nav>
           <ul id="nav-links" class="flex space-x-4 md:space-x-8 text-sm md:text-base font-medium">
-            <li><a href="index.html" class="hover:text-yellow-300">मुखपृष्ठ</a></li>
-            <li><a href="status.html" class="hover:text-yellow-300 font-bold border-b-2 border-yellow-300">विद्यालय स्थिति</a></li>
-            <li><a href="report.html" class="hover:text-yellow-300">रिपोर्ट</a></li>
-            <li><a href="contact.html" class="hover:text-yellow-300">संपर्क करें</a></li>
+            <li><a href="index.html" class="hover:text-yellow-300 transition duration-150">मुखपृष्ठ</a></li>
+            <li><a href="status.html" class="hover:text-yellow-300 transition duration-150 font-bold border-b-2 border-yellow-300">स्कूल स्थिति</a></li>
+            <li><a href="report.html" class="hover:text-yellow-300 transition duration-150">रिपोर्ट</a></li>
+            <li><a href="contact.html" class="hover:text-yellow-300 transition duration-150">संपर्क करें</a></li>
+            <li><a href="team.html" class="hover:text-yellow-300 transition duration-150">टीम</a></li>
+            
+
+            
           </ul>
         </nav>
         <button class="lang-btn" onclick="toggleLang()">EN</button>
@@ -51,108 +54,113 @@
     </div>
   </header>
 
-  <!-- 🏫 Status Check Form -->
-  <section class="max-w-3xl mx-auto bg-white rounded-xl shadow-xl p-8 my-10">
-    <h1 id="statusHeading" class="text-2xl font-bold text-indigo-700 mb-4 text-center">
-      विद्यालय की स्थिति देखें / Track School Status
+  <!-- Status Section -->
+  <section class="max-w-6xl mx-auto p-6 md:p-10 my-10 bg-white rounded-xl shadow-2xl">
+    <h1 id="main-heading" class="text-3xl font-bold text-indigo-700 mb-6 flex items-center">
+      <i data-lucide="list-checks" class="w-7 h-7 mr-3"></i>
+      शिकायत निगरानी डैशबोर्ड (कार्यवाही की आवश्यकता के क्रम में)
     </h1>
-    <p id="statusNote" class="text-center text-gray-600 mb-6">
-      नोट: कृपया विद्यालय कोड या जनपद नाम भरकर स्थिति देखें।
+    <p id="main-subtext" class="text-gray-600 mb-8">
+      यह सूची आवश्यक कार्रवाई के क्रम में क्रमबद्ध है: सबसे खराब स्थिति वाले स्कूल शीर्ष पर हैं।
     </p>
 
-    <form id="statusForm" class="space-y-5">
-      <div>
-        <label id="labelSchoolId" for="schoolId" class="font-semibold text-gray-800">विद्यालय कोड / School ID *</label>
-        <input type="text" id="schoolId" class="w-full border rounded-md px-3 py-2 mt-1" placeholder="विद्यालय कोड दर्ज करें">
-      </div>
-
-      <div>
-        <label id="labelDistrict" for="district" class="font-semibold text-gray-800">जनपद / District *</label>
-        <input type="text" id="district" class="w-full border rounded-md px-3 py-2 mt-1" placeholder="जनपद का नाम दर्ज करें">
-      </div>
-
-      <div class="text-center text-gray-500 font-semibold">या / OR</div>
-
-      <div>
-        <label id="labelEmail" for="email" class="font-semibold text-gray-800">ई-मेल आईडी / Email ID *</label>
-        <input type="email" id="email" class="w-full border rounded-md px-3 py-2 mt-1" placeholder="ई-मेल आईडी दर्ज करें">
-      </div>
-
-      <div>
-        <label id="labelCaptcha" for="captchaInput" class="font-semibold text-gray-800">
-          कृपया नीचे दिए गए बॉक्स में उपलब्ध सुरक्षा कोड अंकित करें *
-        </label>
-        <div class="flex justify-between items-center mt-2">
-          <span id="captchaText" class="bg-black text-green-400 text-lg px-5 py-2 rounded-md select-none font-bold tracking-widest">814084</span>
-          <button type="button" id="refreshBtn" class="text-indigo-600 underline">अन्य अंक प्राप्त करें</button>
-        </div>
-        <input type="text" id="captchaInput" class="w-full border rounded-md px-3 py-2 mt-3" placeholder="कैप्चा अंक दर्ज करें" required>
-      </div>
-
-      <div class="flex justify-center gap-4 mt-6">
-        <button type="submit" id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md">सबमिट करें</button>
-        <button type="reset" id="resetBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md">रीसेट</button>
-      </div>
-    </form>
-
-    <!-- 📊 Result Section -->
-    <div id="statusContainer" class="hidden mt-10 bg-blue-50 p-6 rounded-lg shadow-inner border">
-      <h2 id="statusReportHeading" class="text-xl font-bold mb-3 text-indigo-700">विद्यालय स्थिति रिपोर्ट</h2>
-      <div class="bg-white border rounded-lg shadow p-5">
-        <h3 id="schoolName" class="text-lg font-bold">विद्यालय A</h3>
-        <p><strong>स्वच्छता:</strong> अच्छी</p>
-        <p><strong>बिजली:</strong> उपलब्ध</p>
-        <p><strong>पानी:</strong> उपलब्ध</p>
-        <p><strong>भवन स्थिति:</strong> सुधार आवश्यक</p>
-      </div>
-    </div>
+    <div id="complaintList" class="space-y-4"></div>
   </section>
 
-  <!-- 🦶 Footer -->
-  <footer class="p-6 text-center bg-gray-800 text-gray-300 mt-10">
-    <p>© 2025 Government of Uttar Pradesh | InfraSight AI & IoT Monitoring Initiative</p>
+  <!-- Footer -->
+  <footer class="p-8 text-center bg-gray-800 text-gray-300 mt-10">
+    <p class="text-sm">© 2025 Government of Uttar Pradesh | InfraSight AI & IoT Monitoring Initiative</p>
   </footer>
 
-  <!-- ⚙️ Script -->
   <script>
-    // 🌐 Captcha refresh
-    document.getElementById("refreshBtn").addEventListener("click", () => {
-      const random = Math.floor(100000 + Math.random() * 900000);
-      document.getElementById("captchaText").textContent = random;
-    });
-
-    // 🧩 Form Submit (Show Result)
-    document.getElementById("statusForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      document.getElementById("statusContainer").classList.remove("hidden");
-    });
-
-    // 🌏 Language Toggle
+    // -------- Language Data --------
     let lang = 'hi';
     const translations = {
       hi: {
-        heading: "विद्यालय की स्थिति देखें / Track School Status",
-        note: "नोट: कृपया विद्यालय कोड या जनपद नाम भरकर स्थिति देखें।",
-        submit: "सबमिट करें",
-        reset: "रीसेट"
+        title: "इन्फ्रासाइट: विद्यालय अवसंरचना निगरानी प्रणाली",
+        nav: ["मुखपृष्ठ", "स्कूल स्थिति", "रिपोर्ट", "फीडबैक"],
+        heading: "शिकायत निगरानी डैशबोर्ड (कार्यवाही की आवश्यकता के क्रम में)",
+        subtext: "यह सूची आवश्यक कार्रवाई के क्रम में क्रमबद्ध है: सबसे खराब स्थिति वाले स्कूल शीर्ष पर हैं।"
       },
       en: {
-        heading: "Check School Status",
-        note: "Note: Please enter either School ID or District to view status.",
-        submit: "Submit",
-        reset: "Reset"
+        title: "InfraSight: School Infrastructure Monitoring System",
+        nav: ["Home", "School Status", "Report", "Feedback"],
+        heading: "Complaint Monitoring Dashboard (Priority Order)",
+        subtext: "This list is arranged by urgency: schools in the worst condition appear first."
       }
     };
 
     function toggleLang() {
       lang = lang === 'hi' ? 'en' : 'hi';
       const t = translations[lang];
-      document.getElementById("statusHeading").innerText = t.heading;
-      document.getElementById("statusNote").innerText = t.note;
-      document.getElementById("submitBtn").innerText = t.submit;
-      document.getElementById("resetBtn").innerText = t.reset;
-      document.querySelector(".lang-btn").innerText = lang === 'hi' ? 'EN' : 'HI';
+      document.getElementById('title-text').innerText = t.title;
+      document.querySelectorAll('#nav-links li a').forEach((a, i) => a.innerText = t.nav[i]);
+      document.getElementById('main-heading').innerText = t.heading;
+      document.getElementById('main-subtext').innerText = t.subtext;
+      document.querySelector('.lang-btn').innerText = lang === 'hi' ? 'EN' : 'HI';
     }
+
+    // -------- Complaint Data --------
+    const complaints = [
+      { id: 'C003', school: 'प्राथमिक विद्यालय, फतेहपुर', category: 'Worst', issue: 'दीवारें ढह रही हैं, छत में बड़े छेद हैं।', action: 'तत्काल मरम्मत/पुनर्निर्माण', date: '2025-10-28' },
+      { id: 'C005', school: 'जूनियर हाई स्कूल, कानपुर', category: 'Worst', issue: 'शौचालय पूरी तरह से अनुपयोगी और अस्वच्छ हैं।', action: 'स्वच्छता और बुनियादी ढांचे का नवीनीकरण', date: '2025-11-01' },
+      { id: 'C001', school: 'गवर्नमेंट स्कूल, लखनऊ', category: 'Bad', issue: 'टूटे हुए फर्नीचर और बिजली की खुली तारें।', action: 'सुरक्षा और फर्नीचर प्रतिस्थापन', date: '2025-10-30' },
+      { id: 'C004', school: 'प्राथमिक पाठशाला, अयोध्या', category: 'Bad', issue: 'पेयजल की सुविधा नहीं है, हैंडपंप सूखा है।', action: 'नए जल स्रोत की स्थापना', date: '2025-10-29' },
+      { id: 'C002', school: 'मॉडल स्कूल, वाराणसी', category: 'Good', issue: 'खेल के मैदान में थोड़ी मरम्मत की आवश्यकता है।', action: 'सामान्य रखरखाव', date: '2025-10-25' }
+    ];
+
+    function getCategoryColor(category) {
+      switch (category) {
+        case 'Worst': return 'bg-red-500';
+        case 'Bad': return 'bg-yellow-500';
+        case 'Good': return 'bg-green-500';
+        default: return 'bg-gray-500';
+      }
+    }
+
+    function getCategoryTag(category) {
+      switch (category) {
+        case 'Worst': return 'कार्यवाही की तुरंत आवश्यकता';
+        case 'Bad': return 'मध्यम प्राथमिकता';
+        case 'Good': return 'कम प्राथमिकता';
+        default: return 'अज्ञात';
+      }
+    }
+
+    function renderComplaints() {
+      const container = document.getElementById('complaintList');
+      container.innerHTML = '';
+      complaints.forEach(complaint => {
+        const colorClass = getCategoryColor(complaint.category);
+        const tagText = getCategoryTag(complaint.category);
+        const card = document.createElement('div');
+        card.className = `p-5 border-l-8 ${complaint.category === 'Worst' ? 'border-red-600 bg-red-50' : complaint.category === 'Bad' ? 'border-yellow-600 bg-yellow-50' : 'border-green-600 bg-green-50'} rounded-xl shadow-md transition duration-300 hover:shadow-lg`;
+        card.innerHTML = `
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div class="mb-3 md:mb-0">
+              <h3 class="text-xl font-bold text-gray-800">${complaint.school}
+                <span class="ml-3 inline-block px-3 py-1 text-xs font-semibold rounded-full text-white ${colorClass}">
+                  ${tagText} (${complaint.category})
+                </span>
+              </h3>
+              <p class="text-sm text-gray-500">शिकायत ID: ${complaint.id} | दिनांक: ${complaint.date}</p>
+            </div>
+            <a href="survey.html?id=${complaint.id}" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-full hover:bg-indigo-700 transition duration-300 flex items-center shadow-md">
+              <i data-lucide="check-circle" class="w-4 h-4 mr-2"></i>
+              अधिकारी सत्यापन/कार्रवाई
+            </a>
+          </div>
+          <div class="mt-3 border-t pt-3">
+            <p class="text-lg font-semibold text-gray-700">समस्या: <span class="font-normal text-gray-600">${complaint.issue}</span></p>
+            <p class="text-lg font-semibold text-gray-700">आवश्यक कार्रवाई: <span class="font-normal text-gray-600">${complaint.action}</span></p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', renderComplaints);
   </script>
 </body>
 </html>

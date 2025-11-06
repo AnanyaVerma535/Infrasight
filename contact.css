@@ -1,129 +1,153 @@
-/* --- General Styling --- */
-body {
+/* Global Reset */
+body, html {
   margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(180deg, #005b96, #003f63);
-  color: white;
+  padding: 0;
+  scroll-behavior: smooth;
 }
 
-/* --- Header/Navbar --- */
+/* Header */
 .navbar {
+  background: linear-gradient(90deg, #1e1b4b, #312e81);
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #0078d7;
-  padding: 10px 30px;
-  color: white;
+  padding: 18px 60px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.navbar .logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.navbar .logo img {
-  height: 45px;
-  width: 45px;
-}
-
-.navbar ul {
-  list-style: none;
-  display: flex;
-  gap: 25px;
-  margin: 0;
-}
-
-.navbar ul li a {
-  color: white;
+#nav-links li a {
+  color: #e0e7ff;
   text-decoration: none;
-  font-size: 1.1rem;
-}
-
-.navbar ul li a:hover,
-.navbar ul li a.active {
-  text-decoration: underline;
   font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 1.05rem;
 }
 
-/* --- Contact Section --- */
-.contact-section {
-  max-width: 650px;
-  margin: 60px auto;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 30px 40px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+#nav-links li a:hover,
+#nav-links li a.active {
+  color: #facc15;
+  border-bottom: 2px solid #facc15;
+  padding-bottom: 3px;
 }
 
-.contact-section h1 {
+.lang-btn {
+  background: #facc15;
+  color: #1e1b4b;
+  font-weight: bold;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: #ffe169;
+  transform: scale(1.05);
+}
+
+/* Contact Section */
+.contact-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  padding: 40px 20px;
+  background: radial-gradient(circle at 30% 30%, rgba(147, 197, 253, 0.1), rgba(255,255,255,0.05));
+}
+
+.contact-container {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 1.2s ease forwards;
   text-align: center;
-  color: #fff;
-  font-size: 1.8rem;
+}
+
+.contact-container h1 {
+  font-size: 2.3rem;
+  color: #fbbf24;
   margin-bottom: 10px;
 }
 
-.contact-section p {
-  text-align: center;
-  color: #cce7ff;
-  font-size: 1rem;
+.contact-container p {
+  color: #e2e8f0;
   margin-bottom: 25px;
+  font-size: 1.1rem;
 }
 
-/* --- Form Styling --- */
+/* Form Styling */
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  text-align: left;
 }
 
 label {
-  font-weight: bold;
-  color: #e3f2fd;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #e5e7eb;
 }
 
 input,
 textarea {
-  width: 100%;
-  padding: 12px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  border-radius: 12px;
   font-size: 1rem;
+  margin-bottom: 20px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.2);
+  color: white;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: #d1e3ff;
-}
-
-textarea {
-  resize: none;
+input:focus,
+textarea:focus {
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 0 10px #a78bfa;
 }
 
 button {
-  margin-top: 10px;
-  background-color: #00aaff;
+  background: linear-gradient(90deg, #7c3aed, #6366f1);
   color: white;
   font-weight: bold;
   border: none;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  font-size: 1.1rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 25px rgba(99,102,241,0.4);
 }
 
 button:hover {
-  background-color: #0090e0;
+  transform: scale(1.08);
+  box-shadow: 0 8px 35px rgba(139,92,246,0.7);
 }
 
-/* --- Footer --- */
-footer {
-  background: #0078d7;
-  color: white;
+/* Footer */
+.footer {
+  background-color: #1e1b4b;
+  color: #e0e7ff;
   text-align: center;
-  padding: 12px 0;
-  margin-top: 60px;
-  font-size: 0.95rem;
+  padding: 14px 0;
+  font-size: 1rem;
+  margin-top: 50px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
