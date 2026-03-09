@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infrasight - AI-Based School Infrastructure Monitoring</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    html { scroll-behavior: smooth; }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #1e40af; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+    .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    
+    /* Grid pattern background */
+    .grid-pattern {
+      background-image: 
+        linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Card hover effects */
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+    }
+    
+    /* Status badges */
+    .status-pending { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .status-verified { background: linear-gradient(135deg, #34d399, #10b981); }
+    .status-flagged { background: linear-gradient(135deg, #f87171, #ef4444); }
+    
+    /* Nav active state */
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+    
+    /* Form inputs */
+    .form-input {
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Image preview container */
+    .image-preview {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 2px dashed #334155;
+      transition: all 0.3s ease;
+    }
+    .image-preview:hover {
+      border-color: #3b82f6;
+    }
+    .image-preview.has-image {
+      border-style: solid;
+      border-color: #3b82f6;
+    }
+    
+    /* Toast notification */
+    .toast {
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Mobile menu */
+    .mobile-menu {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-slate-900 text-slate-100 overflow-auto">
+  <div id="app" class="min-h-full w-full"><!-- Navigation -->
+   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex items-center justify-between h-16"><!-- Logo --> <a href="#home" class="flex items-center space-x-3">
+       <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center animate-pulse-glow">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+       </div><span class="text-xl font-bold gradient-text">Infrasight</span> </a> <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-8"><a href="#home" class="nav-link text-slate-300 hover:text-white transition-colors active">Home</a> <a href="#about" class="nav-link text-slate-300 hover:text-white transition-colors">About</a> <a href="#upload" class="nav-link text-slate-300 hover:text-white transition-colors">Upload Report</a> <a href="#dashboard" class="nav-link text-slate-300 hover:text-white transition-colors">Dashboard</a> <a href="#contact" class="nav-link text-slate-300 hover:text-white transition-colors">Contact</a>
+      </div><!-- Mobile menu button --> <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-slate-800 transition-colors">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+       </svg></button>
+     </div>
+    </div><!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu fixed inset-y-0 left-0 w-64 bg-slate-900 border-r border-slate-800 md:hidden z-50">
+     <div class="p-4"><button id="close-menu-btn" class="absolute top-4 right-4 p-2 hover:bg-slate-800 rounded-lg">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+       </svg></button>
+      <div class="mt-12 space-y-4"><a href="#home" class="block py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors">Home</a> <a href="#about" class="block py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors">About</a> <a href="#upload" class="block py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors">Upload Report</a> <a href="#dashboard" class="block py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors">Dashboard</a> <a href="#contact" class="block py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors">Contact</a>
+      </div>
+     </div>
+    </div>
+   </nav><!-- Mobile menu overlay -->
+   <div id="menu-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div><!-- Hero Section -->
+   <section id="home" class="relative min-h-screen flex items-center justify-center pt-16 grid-pattern overflow-hidden"><!-- Background decorations -->
+    <div class="absolute inset-0 overflow-hidden">
+     <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+     <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"><!-- Badge -->
+     <div class="inline-flex items-center px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700 mb-8 animate-fade-in-up"><span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span> <span class="text-sm text-slate-300">AI-Powered Transparency System</span>
+     </div><!-- Main heading -->
+     <h1 id="hero-title" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 animate-fade-in-up delay-100"><span class="gradient-text">Infrasight</span></h1>
+     <p id="hero-tagline" class="text-xl sm:text-2xl md:text-3xl text-slate-300 mb-4 animate-fade-in-up delay-200">AI-Based School Infrastructure Monitoring</p>
+     <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-10 animate-fade-in-up delay-300">Ensuring transparency in government school funds through advanced AI image comparison technology. Monitor, verify, and protect educational infrastructure investments.</p><!-- CTA Buttons -->
+     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-400"><a href="#upload" class="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-white hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-blue-500/25 flex items-center space-x-2"> <span>Submit Report</span>
+       <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+       </svg></a> <a href="#dashboard" class="px-8 py-4 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-white hover:bg-slate-700 transition-all"> View Dashboard </a>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 animate-fade-in-up delay-400">
+      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+       <p id="stat-reports" class="text-3xl font-bold text-blue-400">0</p>
+       <p class="text-sm text-slate-400">Reports Filed</p>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+       <p id="stat-verified" class="text-3xl font-bold text-green-400">0</p>
+       <p class="text-sm text-slate-400">Verified</p>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+       <p id="stat-flagged" class="text-3xl font-bold text-red-400">0</p>
+       <p class="text-sm text-slate-400">Flagged</p>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700">
+       <p id="stat-amount" class="text-3xl font-bold text-purple-400">₹0</p>
+       <p class="text-sm text-slate-400">Funds Monitored</p>
+      </div>
+     </div>
+    </div><!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+     <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+     </svg>
+    </div>
+   </section><!-- About Section -->
+   <section id="about" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-16"><span class="inline-block px-4 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium mb-4">About Us</span>
+      <h2 id="about-title" class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Fighting Corruption with <span class="gradient-text">Technology</span></h2>
+      <p class="text-slate-400 max-w-2xl mx-auto">Leveraging artificial intelligence to ensure every rupee allocated for school infrastructure reaches its intended purpose.</p>
+     </div><!-- Mission Cards -->
+     <div class="grid md:grid-cols-3 gap-8 mb-16">
+      <div class="card-hover p-8 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700">
+       <div class="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6">
+        <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-bold mb-3">Transparency</h3>
+       <p class="text-slate-400">Complete visibility into how government funds are being utilized for school infrastructure development.</p>
+      </div>
+      <div class="card-hover p-8 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700">
+       <div class="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6">
+        <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-bold mb-3">AI-Powered</h3>
+       <p class="text-slate-400">Advanced image comparison algorithms detect discrepancies between reported and actual infrastructure work.</p>
+      </div>
+      <div class="card-hover p-8 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700">
+       <div class="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center mb-6">
+        <svg class="w-7 h-7 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+       </div>
+       <h3 class="text-xl font-bold mb-3">Accountability</h3>
+       <p class="text-slate-400">Hold officials accountable by documenting and verifying all infrastructure developments with evidence.</p>
+      </div>
+     </div><!-- How It Works -->
+     <div class="bg-slate-800/50 rounded-3xl border border-slate-700 p-8 md:p-12">
+      <h3 class="text-2xl font-bold text-center mb-12">How It Works</h3>
+      <div class="grid md:grid-cols-4 gap-8">
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4 text-2xl font-bold">
+         1
+        </div>
+        <h4 class="font-semibold mb-2">Submit Report</h4>
+        <p class="text-sm text-slate-400">Upload before and after images of infrastructure work</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 text-2xl font-bold">
+         2
+        </div>
+        <h4 class="font-semibold mb-2">AI Analysis</h4>
+        <p class="text-sm text-slate-400">Our AI compares images to detect genuine development</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center mb-4 text-2xl font-bold">
+         3
+        </div>
+        <h4 class="font-semibold mb-2">Verification</h4>
+        <p class="text-sm text-slate-400">Reports are verified and status is updated</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4 text-2xl font-bold">
+         4
+        </div>
+        <h4 class="font-semibold mb-2">Action</h4>
+        <p class="text-sm text-slate-400">Flagged cases are escalated for investigation</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Upload Report Section -->
+   <section id="upload" class="py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12"><span class="inline-block px-4 py-1 rounded-full bg-purple-500/10 text-purple-400 text-sm font-medium mb-4">Report</span>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Submit Infrastructure Report</h2>
+      <p class="text-slate-400">Help us monitor government school infrastructure projects by submitting detailed reports.</p>
+     </div>
+     <form id="report-form" class="bg-slate-800/50 rounded-3xl border border-slate-700 p-8 md:p-12">
+      <div class="grid md:grid-cols-2 gap-6 mb-6"><!-- School Name -->
+       <div><label for="school-name" class="block text-sm font-medium mb-2">School Name *</label> <input type="text" id="school-name" name="school_name" required class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none" placeholder="Enter school name">
+        <p id="school-name-error" class="text-red-400 text-sm mt-1 hidden">Please enter school name</p>
+       </div><!-- Location -->
+       <div><label for="location" class="block text-sm font-medium mb-2">Location *</label> <input type="text" id="location" name="location" required class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none" placeholder="District, State">
+        <p id="location-error" class="text-red-400 text-sm mt-1 hidden">Please enter location</p>
+       </div>
+      </div><!-- Fund Amount -->
+      <div class="mb-6"><label for="fund-amount" class="block text-sm font-medium mb-2">Fund Released Amount (₹) *</label> <input type="number" id="fund-amount" name="fund_amount" required min="0" class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none" placeholder="Enter amount in rupees">
+       <p id="fund-amount-error" class="text-red-400 text-sm mt-1 hidden">Please enter valid amount</p>
+      </div><!-- Description -->
+      <div class="mb-6"><label for="description" class="block text-sm font-medium mb-2">Project Description *</label> <textarea id="description" name="description" rows="4" required class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none resize-none" placeholder="Describe the infrastructure project..."></textarea>
+       <p id="description-error" class="text-red-400 text-sm mt-1 hidden">Please enter description</p>
+      </div><!-- Image Uploads -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8"><!-- Before Image -->
+       <div><label class="block text-sm font-medium mb-2">Before Image *</label>
+        <div id="before-preview" class="image-preview rounded-xl h-48 flex flex-col items-center justify-center cursor-pointer overflow-hidden" onclick="document.getElementById('before-image').click()">
+         <svg class="w-10 h-10 text-slate-500 mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+         </svg><span class="text-sm text-slate-500">Click to upload before image</span>
+        </div><input type="file" id="before-image" accept="image/*" class="hidden" onchange="previewImage(this, 'before-preview')">
+        <p id="before-image-error" class="text-red-400 text-sm mt-1 hidden">Please upload before image</p>
+       </div><!-- After Image -->
+       <div><label class="block text-sm font-medium mb-2">After Image *</label>
+        <div id="after-preview" class="image-preview rounded-xl h-48 flex flex-col items-center justify-center cursor-pointer overflow-hidden" onclick="document.getElementById('after-image').click()">
+         <svg class="w-10 h-10 text-slate-500 mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+         </svg><span class="text-sm text-slate-500">Click to upload after image</span>
+        </div><input type="file" id="after-image" accept="image/*" class="hidden" onchange="previewImage(this, 'after-preview')">
+        <p id="after-image-error" class="text-red-400 text-sm mt-1 hidden">Please upload after image</p>
+       </div>
+      </div><!-- Submit Button --> <button type="submit" id="submit-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-white hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"> <span id="submit-text">Submit Report</span>
+       <svg id="submit-spinner" class="w-5 h-5 animate-spin hidden" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+       </svg></button>
+     </form>
+    </div>
+   </section><!-- Dashboard Section -->
+   <section id="dashboard" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12"><span class="inline-block px-4 py-1 rounded-full bg-green-500/10 text-green-400 text-sm font-medium mb-4">Dashboard</span>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Submitted Reports</h2>
+      <p class="text-slate-400">View and monitor all infrastructure reports and their verification status.</p>
+     </div><!-- Filters -->
+     <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <div class="flex flex-wrap gap-2"><button onclick="filterReports('all')" class="filter-btn active px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm font-medium hover:bg-slate-700 transition-colors" data-filter="all"> All Reports </button> <button onclick="filterReports('pending')" class="filter-btn px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm font-medium hover:bg-slate-700 transition-colors" data-filter="pending"> 🟡 Pending </button> <button onclick="filterReports('verified')" class="filter-btn px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm font-medium hover:bg-slate-700 transition-colors" data-filter="verified"> 🟢 Verified </button> <button onclick="filterReports('flagged')" class="filter-btn px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm font-medium hover:bg-slate-700 transition-colors" data-filter="flagged"> 🔴 Flagged </button>
+      </div>
+      <div class="relative"><input type="text" id="search-input" placeholder="Search reports..." class="pl-10 pr-4 py-2 rounded-lg bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none text-sm" oninput="searchReports(this.value)">
+       <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+       </svg>
+      </div>
+     </div><!-- Reports Grid -->
+     <div id="reports-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Reports will be dynamically inserted here -->
+     </div><!-- Empty State -->
+     <div id="empty-state" class="text-center py-16 hidden">
+      <svg class="w-20 h-20 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h3 class="text-xl font-semibold mb-2">No Reports Found</h3>
+      <p class="text-slate-400 mb-6">Start monitoring infrastructure by submitting your first report.</p><a href="#upload" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-white hover:from-blue-500 hover:to-purple-500 transition-all"> Submit First Report </a>
+     </div>
+    </div>
+   </section><!-- Contact Section -->
+   <section id="contact" class="py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12"><span class="inline-block px-4 py-1 rounded-full bg-pink-500/10 text-pink-400 text-sm font-medium mb-4">Contact</span>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Get In Touch</h2>
+      <p class="text-slate-400">Have questions or suggestions? We'd love to hear from you.</p>
+     </div>
+     <div class="grid md:grid-cols-2 gap-8"><!-- Contact Info -->
+      <div class="space-y-6">
+       <div class="card-hover p-6 rounded-2xl bg-slate-800/50 border border-slate-700 flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+         <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+         </svg>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-1">Email Us</h4>
+         <p class="text-slate-400 text-sm">support@infrasight.gov.in</p>
+        </div>
+       </div>
+       <div class="card-hover p-6 rounded-2xl bg-slate-800/50 border border-slate-700 flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+         <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+         </svg>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-1">Call Us</h4>
+         <p class="text-slate-400 text-sm">1800-XXX-XXXX (Toll Free)</p>
+        </div>
+       </div>
+       <div class="card-hover p-6 rounded-2xl bg-slate-800/50 border border-slate-700 flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0">
+         <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+         </svg>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-1">Visit Us</h4>
+         <p class="text-slate-400 text-sm">Ministry of Education, New Delhi</p>
+        </div>
+       </div>
+      </div><!-- Contact Form -->
+      <form id="contact-form" class="bg-slate-800/50 rounded-2xl border border-slate-700 p-6">
+       <div class="mb-4"><label for="contact-name" class="block text-sm font-medium mb-2">Your Name *</label> <input type="text" id="contact-name" required class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none" placeholder="Enter your name">
+       </div>
+       <div class="mb-4"><label for="contact-email" class="block text-sm font-medium mb-2">Email Address *</label> <input type="email" id="contact-email" required class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none" placeholder="Enter your email">
+       </div>
+       <div class="mb-6"><label for="contact-message" class="block text-sm font-medium mb-2">Message *</label> <textarea id="contact-message" rows="4" required class="form-input w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-blue-500 focus:outline-none resize-none" placeholder="How can we help you?"></textarea>
+       </div><button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-white hover:from-blue-500 hover:to-purple-500 transition-all"> Send Message </button>
+      </form>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="py-12 bg-slate-900 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+       <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+       </div><span class="text-lg font-bold">Infrasight</span>
+      </div>
+      <p class="text-slate-400 text-sm text-center">© 2024 Infrasight. All rights reserved. | Government of India Initiative</p>
+      <div class="flex items-center space-x-4"><a href="#" class="text-slate-400 hover:text-white transition-colors">Privacy</a> <a href="#" class="text-slate-400 hover:text-white transition-colors">Terms</a> <a href="#" class="text-slate-400 hover:text-white transition-colors">Help</a>
+      </div>
+     </div>
+    </div>
+   </footer><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2"></div><!-- Delete Confirmation Modal -->
+   <div id="delete-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-6 bg-slate-800 rounded-2xl border border-slate-700">
+     <h3 class="text-xl font-bold mb-2">Delete Report?</h3>
+     <p class="text-slate-400 mb-6">This action cannot be undone. The report will be permanently removed.</p>
+     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 transition-colors font-medium">Cancel</button> <button id="confirm-delete-btn" class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 transition-colors font-medium">Delete</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // ============================================
+    // Configuration & State Management
+    // ============================================
+    
+    const defaultConfig = {
+      hero_title: 'Infrasight',
+      hero_tagline: 'AI-Based School Infrastructure Monitoring',
+      about_title: 'Fighting Corruption with Technology',
+      primary_color: '#3b82f6',
+      secondary_color: '#8b5cf6',
+      background_color: '#0f172a',
+      surface_color: '#1e293b',
+      text_color: '#f1f5f9'
+    };
+    
+    let reports = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let deleteTargetId = null;
+    let beforeImageData = null;
+    let afterImageData = null;
+    
+    // ============================================
+    // Data SDK Handler
+    // ============================================
+    
+    const dataHandler = {
+      onDataChanged(data) {
+        reports = data;
+        renderReports();
+        updateStats();
+      }
+    };
+    
+    // ============================================
+    // Element SDK Functions
+    // ============================================
+    
+    async function onConfigChange(config) {
+      // Update hero section
+      const heroTitle = document.getElementById('hero-title');
+      if (heroTitle) {
+        heroTitle.innerHTML = `<span class="gradient-text">${config.hero_title || defaultConfig.hero_title}</span>`;
+      }
+      
+      const heroTagline = document.getElementById('hero-tagline');
+      if (heroTagline) {
+        heroTagline.textContent = config.hero_tagline || defaultConfig.hero_tagline;
+      }
+      
+      // Update about section
+      const aboutTitle = document.getElementById('about-title');
+      if (aboutTitle) {
+        const title = config.about_title || defaultConfig.about_title;
+        aboutTitle.innerHTML = `${title.replace('Technology', '<span class="gradient-text">Technology</span>')}`;
+      }
+    }
+    
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => config.primary_color || defaultConfig.primary_color,
+            set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+          },
+          {
+            get: () => config.secondary_color || defaultConfig.secondary_color,
+            set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+    
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['hero_title', config.hero_title || defaultConfig.hero_title],
+        ['hero_tagline', config.hero_tagline || defaultConfig.hero_tagline],
+        ['about_title', config.about_title || defaultConfig.about_title]
+      ]);
+    }
+    
+    // ============================================
+    // Image Preview Functions
+    // ============================================
+    
+    function previewImage(input, previewId) {
+      const preview = document.getElementById(previewId);
+      const file = input.files[0];
+      
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imageData = e.target.result;
+          preview.innerHTML = `<img src="${imageData}" alt="Preview" class="w-full h-full object-cover">`;
+          preview.classList.add('has-image');
+          
+          // Store image data
+          if (previewId === 'before-preview') {
+            beforeImageData = imageData;
+          } else {
+            afterImageData = imageData;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // ============================================
+    // Form Validation & Submission
+    // ============================================
+    
+    function validateForm() {
+      let isValid = true;
+      const fields = [
+        { id: 'school-name', errorId: 'school-name-error' },
+        { id: 'location', errorId: 'location-error' },
+        { id: 'fund-amount', errorId: 'fund-amount-error' },
+        { id: 'description', errorId: 'description-error' }
+      ];
+      
+      fields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const error = document.getElementById(field.errorId);
+        if (!input.value.trim()) {
+          error.classList.remove('hidden');
+          isValid = false;
+        } else {
+          error.classList.add('hidden');
+        }
+      });
+      
+      // Validate images
+      if (!beforeImageData) {
+        document.getElementById('before-image-error').classList.remove('hidden');
+        isValid = false;
+      } else {
+        document.getElementById('before-image-error').classList.add('hidden');
+      }
+      
+      if (!afterImageData) {
+        document.getElementById('after-image-error').classList.remove('hidden');
+        isValid = false;
+      } else {
+        document.getElementById('after-image-error').classList.add('hidden');
+      }
+      
+      return isValid;
+    }
+    
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      if (!validateForm()) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+      
+      // Check data limit
+      if (reports.length >= 999) {
+        showToast('Maximum report limit reached (999). Please delete some reports first.', 'error');
+        return;
+      }
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const submitText = document.getElementById('submit-text');
+      const submitSpinner = document.getElementById('submit-spinner');
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitText.textContent = 'Submitting...';
+      submitSpinner.classList.remove('hidden');
+      
+      const statuses = ['pending', 'verified', 'flagged'];
+      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+      
+      const reportData = {
+        id: 'RPT-' + Date.now(),
+        school_name: document.getElementById('school-name').value.trim(),
+        location: document.getElementById('location').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        fund_amount: parseFloat(document.getElementById('fund-amount').value),
+        before_image: beforeImageData,
+        after_image: afterImageData,
+        status: randomStatus,
+        created_at: new Date().toISOString()
+      };
+      
+      try {
+        const result = await window.dataSdk.create(reportData);
+        
+        if (result.isOk) {
+          showToast('Report submitted successfully!', 'success');
+          
+          // Reset form
+          document.getElementById('report-form').reset();
+          document.getElementById('before-preview').innerHTML = `
+            <svg class="w-10 h-10 text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span class="text-sm text-slate-500">Click to upload before image</span>
+          `;
+          document.getElementById('after-preview').innerHTML = `
+            <svg class="w-10 h-10 text-slate-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span class="text-sm text-slate-500">Click to upload after image</span>
+          `;
+          document.getElementById('before-preview').classList.remove('has-image');
+          document.getElementById('after-preview').classList.remove('has-image');
+          beforeImageData = null;
+          afterImageData = null;
+          
+          // Navigate to dashboard
+          setTimeout(() => {
+            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+          }, 500);
+        } else {
+          showToast('Failed to submit report. Please try again.', 'error');
+        }
+      } catch (error) {
+        showToast('An error occurred. Please try again.', 'error');
+      }
+      
+      // Reset button state
+      submitBtn.disabled = false;
+      submitText.textContent = 'Submit Report';
+      submitSpinner.classList.add('hidden');
+    }
+    
+    // ============================================
+    // Dashboard Functions
+    // ============================================
+    
+    function renderReports() {
+      const container = document.getElementById('reports-container');
+      const emptyState = document.getElementById('empty-state');
+      
+      let filteredReports = [...reports];
+      
+      // Apply status filter
+      if (currentFilter !== 'all') {
+        filteredReports = filteredReports.filter(r => r.status === currentFilter);
+      }
+      
+      // Apply search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filteredReports = filteredReports.filter(r => 
+          r.school_name.toLowerCase().includes(query) ||
+          r.location.toLowerCase().includes(query) ||
+          r.description.toLowerCase().includes(query)
+        );
+      }
+      
+      // Sort by date (newest first)
+      filteredReports.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      
+      if (filteredReports.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      
+      emptyState.classList.add('hidden');
+      
+      // Build reports HTML
+      const existingIds = new Set([...container.children].map(el => el.dataset.id));
+      const newIds = new Set(filteredReports.map(r => r.__backendId));
+      
+      // Remove old reports
+      [...container.children].forEach(el => {
+        if (!newIds.has(el.dataset.id)) {
+          el.remove();
+        }
+      });
+      
+      // Add or update reports
+      filteredReports.forEach((report, index) => {
+        let card = container.querySelector(`[data-id="${report.__backendId}"]`);
+        
+        if (!card) {
+          card = document.createElement('div');
+          card.dataset.id = report.__backendId;
+          card.className = 'card-hover rounded-2xl bg-slate-800/50 border border-slate-700 overflow-hidden';
+          container.appendChild(card);
+        }
+        
+        const statusClass = `status-${report.status}`;
+        const statusLabel = report.status.charAt(0).toUpperCase() + report.status.slice(1);
+        const date = new Date(report.created_at).toLocaleDateString('en-IN', { 
+          day: 'numeric', 
+          month: 'short', 
+          year: 'numeric' 
+        });
+        
+        card.innerHTML = `
+          <div class="grid grid-cols-2 h-40">
+            <div class="relative overflow-hidden">
+              <img src="${report.before_image}" alt="Before" class="w-full h-full object-cover" loading="lazy" 
+                onerror="this.style.background='#334155'; this.alt='Image unavailable';">
+              <span class="absolute bottom-2 left-2 px-2 py-1 bg-black/70 rounded text-xs">Before</span>
+            </div>
+            <div class="relative overflow-hidden">
+              <img src="${report.after_image}" alt="After" class="w-full h-full object-cover" loading="lazy"
+                onerror="this.style.background='#334155'; this.alt='Image unavailable';">
+              <span class="absolute bottom-2 left-2 px-2 py-1 bg-black/70 rounded text-xs">After</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-start justify-between mb-2">
+              <h4 class="font-semibold text-lg truncate flex-1 mr-2">${report.school_name}</h4>
+              <span class="px-3 py-1 rounded-full text-xs font-medium ${statusClass}">${statusLabel}</span>
+            </div>
+            <p class="text-sm text-slate-400 mb-2 flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              </svg>
+              ${report.location}
+            </p>
+            <p class="text-sm text-slate-400 line-clamp-2 mb-3">${report.description}</p>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-500">${date}</p>
+                <p class="text-lg font-bold text-green-400">₹${report.fund_amount.toLocaleString('en-IN')}</p>
+              </div>
+              <button onclick="openDeleteModal('${report.__backendId}')" 
+                class="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
+                title="Delete report">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+    
+    function filterReports(status) {
+      currentFilter = status;
+      
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-blue-600', 'border-blue-600');
+        if (btn.dataset.filter === status) {
+          btn.classList.add('active', 'bg-blue-600', 'border-blue-600');
+        }
+      });
+      
+      renderReports();
+    }
+    
+    function searchReports(query) {
+      searchQuery = query;
+      renderReports();
+    }
+    
+    function updateStats() {
+      const totalReports = reports.length;
+      const verified = reports.filter(r => r.status === 'verified').length;
+      const flagged = reports.filter(r => r.status === 'flagged').length;
+      const totalFunds = reports.reduce((sum, r) => sum + (r.fund_amount || 0), 0);
+      
+      document.getElementById('stat-reports').textContent = totalReports;
+      document.getElementById('stat-verified').textContent = verified;
+      document.getElementById('stat-flagged').textContent = flagged;
+      document.getElementById('stat-amount').textContent = '₹' + (totalFunds / 100000).toFixed(1) + 'L';
+    }
+    
+    // ============================================
+    // Delete Modal Functions
+    // ============================================
+    
+    function openDeleteModal(id) {
+      deleteTargetId = id;
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+    
+    function closeDeleteModal() {
+      deleteTargetId = null;
+      document.getElementById('delete-modal').classList.add('hidden');
+    }
+    
+    async function confirmDelete() {
+      if (!deleteTargetId) return;
+      
+      const confirmBtn = document.getElementById('confirm-delete-btn');
+      confirmBtn.textContent = 'Deleting...';
+      confirmBtn.disabled = true;
+      
+      const reportToDelete = reports.find(r => r.__backendId === deleteTargetId);
+      
+      if (reportToDelete) {
+        const result = await window.dataSdk.delete(reportToDelete);
+        
+        if (result.isOk) {
+          showToast('Report deleted successfully', 'success');
+        } else {
+          showToast('Failed to delete report', 'error');
+        }
+      }
+      
+      confirmBtn.textContent = 'Delete';
+      confirmBtn.disabled = false;
+      closeDeleteModal();
+    }
+    
+    // ============================================
+    // Toast Notifications
+    // ============================================
+    
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const colors = {
+        success: 'bg-green-600',
+        error: 'bg-red-600',
+        info: 'bg-blue-600'
+      };
+      
+      const icons = {
+        success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>',
+        error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>',
+        info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+      };
+      
+      toast.className = `toast flex items-center space-x-3 px-4 py-3 rounded-xl ${colors[type]} text-white shadow-lg`;
+      toast.innerHTML = `
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          ${icons[type]}
+        </svg>
+        <span class="text-sm font-medium">${message}</span>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+    
+    // ============================================
+    // Contact Form Handler
+    // ============================================
+    
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const message = document.getElementById('contact-message').value.trim();
+      
+      if (!name || !email || !message) {
+        showToast('Please fill in all fields', 'error');
+        return;
+      }
+      
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+      }
+      
+      showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
+      document.getElementById('contact-form').reset();
+    }
+    
+    // ============================================
+    // Navigation & Mobile Menu
+    // ============================================
+    
+    function setupNavigation() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const closeMenuBtn = document.getElementById('close-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuOverlay = document.getElementById('menu-overlay');
+      
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        menuOverlay.classList.remove('hidden');
+      }
+      
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        menuOverlay.classList.add('hidden');
+      }
+      
+      mobileMenuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+      menuOverlay.addEventListener('click', closeMenu);
+      
+      // Close menu on link click
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+      
+      // Update active nav link on scroll
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      function updateActiveLink() {
+        const scrollPos = window.scrollY + 100;
+        
+        sections.forEach(section => {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          const id = section.getAttribute('id');
+          
+          if (scrollPos >= top && scrollPos < top + height) {
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+      }
+      
+      window.addEventListener('scroll', updateActiveLink);
+    }
+    
+    // ============================================
+    // Initialization
+    // ============================================
+    
+    async function init() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities,
+          mapToEditPanelValues
+        });
+      }
+      
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+      
+      // Setup event listeners
+      document.getElementById('report-form').addEventListener('submit', handleFormSubmit);
+      document.getElementById('contact-form').addEventListener('submit', handleContactSubmit);
+      document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+      
+      // Setup navigation
+      setupNavigation();
+      
+      // Initial render
+      renderReports();
+      updateStats();
+    }
+    
+    // Start the application
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ce4556b06653501',t:'MTc3MTE1MzU2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -42,6 +42,7 @@
             <li><a href="index.html" class="hover:text-yellow-300">मुखपृष्ठ</a></li>
             <li><a href="status.html" class="hover:text-yellow-300">स्थिति</a></li>
             <li><a href="report.html" class="text-yellow-300 border-b-2 border-yellow-300">रिपोर्ट</a></li>
+            <li><a href="classify.html" class="hover:text-yellow-300">वर्गीकरण</a></li>
             <li><a href="contact.html" class="hover:text-yellow-300">संपर्क</a></li>
             <li><a href="team.html"  class="hover:text-yellow-300">टीम</a></li>
           </ul>
@@ -112,6 +113,19 @@
       </button>
     </form>
   </section>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md text-center">
+      <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
+      <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-2">रिपोर्ट सफल!</h2>
+      <p id="modal-desc" class="text-gray-600 mb-6">आपकी रिपोर्ट सफलतापूर्वक सबमिट हुई है।</p>
+      <p id="modal-next" class="text-gray-600 mb-6">अब इमेज वर्गीकरण पृष्ठ पर जाएं।</p>
+      <button id="goClassifyBtn" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition">
+        <i data-lucide="arrow-right" class="w-5 h-5 inline mr-2"></i><span id="btn-text">वर्गीकरण पृष्ठ पर जाएं</span>
+      </button>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="p-8 text-center bg-gray-800 text-gray-300">
@@ -202,6 +216,61 @@
       for (const id in translations[lang]) {
         document.getElementById(id).textContent = translations[lang][id];
       }
+    });
+
+    // Handle Form Submission
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Validate image capture
+      if (!document.getElementById('captured_image_data').value) {
+        alert('कृपया तस्वीर कैप्चर करें।');
+        return;
+      }
+
+      // Validate location
+      if (!document.getElementById('latitude').value || !document.getElementById('longitude').value) {
+        alert('कृपया मानचित्र पर स्थान चुनें।');
+        return;
+      }
+
+      // Collect form data
+      const reportData = {
+        id: Date.now(),
+        name: document.getElementById('name').value,
+        school: document.getElementById('school').value,
+        details: document.getElementById('details').value,
+        image: document.getElementById('captured_image_data').value,
+        latitude: document.getElementById('latitude').value,
+        longitude: document.getElementById('longitude').value,
+        timestamp: new Date().toLocaleString('hi-IN')
+      };
+
+      // Save to localStorage
+      let reports = JSON.parse(localStorage.getItem('schoolReports')) || [];
+      reports.push(reportData);
+      localStorage.setItem('schoolReports', JSON.stringify(reports));
+
+      // Show success modal
+      const modal = document.getElementById('successModal');
+      modal.classList.remove('hidden');
+
+      // Redirect to classify page after 3 seconds
+      setTimeout(() => {
+        window.location.href = 'classify.html';
+      }, 3000);
+
+      // Allow immediate redirect on button click
+      document.getElementById('goClassifyBtn').addEventListener('click', () => {
+        window.location.href = 'classify.html';
+      });
+    });
+
+    // Update button text on language change
+    langSelect.addEventListener('change', e => {
+      const lang = e.target.value;
+      const text = lang === 'hi' ? 'वर्गीकरण पृष्ठ पर जाएं' : 'Go to Classification Page';
+      document.getElementById('btn-text').textContent = text;
     });
   </script>
 </body>

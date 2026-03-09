@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Action | Infrasight</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    
+    let db;
+    if (Object.keys(firebaseConfig).length > 0) {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+    }
+
+    const complaintId = new URLSearchParams(window.location.search).get('id');
+
+    // 1. Load Data
+    window.addEventListener('DOMContentLoaded', async () => {
+        if (!db || !complaintId) {
+            alert("No ID provided");
+            return;
+        }
+        const docRef = doc(db, "artifacts", appId, "public", "data", "complaints", complaintId);
+        const snap = await getDoc(docRef);
+        
+        if (snap.exists()) {
+            const data = snap.data();
+            document.getElementById('schoolName').innerText = data.school;
+            document.getElementById('issue').innerText = data.ai_summary || data.description;
+            document.getElementById('aiTag').innerText = data.category;
+            
+            const tag = document.getElementById('aiTag');
+            if(data.category === 'Worst') tag.className += " bg-red-600";
+            else if(data.category === 'Bad') tag.className += " bg-orange-500";
+            else tag.className += " bg-green-600";
+        }
+    });
+
+    // 2. Camera Logic (Simplified)
+    window.setupCamera = async () => {
+        const video = document.getElementById('video');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+            video.classList.remove('hidden');
+            document.getElementById('startCamBtn').classList.add('hidden');
+            document.getElementById('captureBtn').classList.remove('hidden');
+        } catch(e) { alert("Camera error"); }
+    };
+
+    window.takePhoto = () => {
+        const video = document.getElementById('video');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const img = canvas.toDataURL('image/jpeg', 0.7);
+        document.getElementById('proofImage').value = img.split(',')[1];
+        
+        // UI
+        video.srcObject.getTracks().forEach(t => t.stop());
+        video.classList.add('hidden');
+        document.getElementById('captureBtn').classList.add('hidden');
+        document.getElementById('previewImg').src = img;
+        document.getElementById('previewImg').classList.remove('hidden');
+    };
+
+    // 3. Handle Submission
+    window.submitSurvey = async (e) => {
+        e.preventDefault();
+        const proof = document.getElementById('proofImage').value;
+        const notes = document.getElementById('notes').value;
+        
+        if(!proof) return alert("Proof photo is required.");
+
+        try {
+            const docRef = doc(db, "artifacts", appId, "public", "data", "complaints", complaintId);
+            await updateDoc(docRef, {
+                status: "Resolved",
+                officer_notes: notes,
+                proof_image: proof,
+                resolved_at: new Date().toISOString()
+            });
+            alert("Verification Success!");
+            window.location.href = "officer_view.html";
+        } catch (err) {
+            console.error(err);
+            alert("Error updating record.");
+        }
+    };
+  </script>
+</head>
+<body class="bg-gray-100 p-6 min-h-screen">
+  <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-xl mt-10">
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h1 class="text-2xl font-bold text-gray-800">Officer Verification</h1>
+        <a href="officer_view.html" class="text-blue-600 hover:underline">Cancel</a>
+    </div>
+    
+    <div class="bg-blue-50 p-4 rounded mb-6 border border-blue-100">
+        <span id="aiTag" class="text-white px-2 py-1 text-xs rounded mb-2 inline-block">Loading...</span>
+        <h2 class="font-bold text-lg text-blue-900" id="schoolName">Loading...</h2>
+        <p class="text-gray-700 mt-1" id="issue">...</p>
+    </div>
+
+    <form onsubmit="submitSurvey(event)" class="space-y-6">
+        <div>
+            <label class="block font-bold mb-1 text-gray-700">Officer Notes</label>
+            <textarea id="notes" class="w-full border p-3 rounded focus:ring-2 focus:ring-blue-500 outline-none" rows="3" placeholder="Describe action taken..." required></textarea>
+        </div>
+
+        <div class="border-2 border-dashed border-gray-300 p-6 rounded text-center bg-gray-50">
+            <p class="mb-4 text-sm font-semibold text-gray-500">Capture Proof of Resolution</p>
+            
+            <video id="video" class="w-full hidden rounded mb-2" autoplay playsinline></video>
+            <img id="previewImg" class="w-full hidden rounded mb-2 border"/>
+            <input type="hidden" id="proofImage">
+            
+            <button type="button" id="startCamBtn" onclick="setupCamera()" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition">Open Camera</button>
+            <button type="button" id="captureBtn" onclick="takePhoto()" class="hidden bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition">Capture Photo</button>
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded text-lg hover:bg-green-700 transition shadow-lg">Mark as Resolved</button>
+    </form>
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

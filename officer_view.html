@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Officer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .card-worst { background: linear-gradient(135deg, #dc2626, #991b1b); } /* Red */
+    .card-bad { background: linear-gradient(135deg, #f97316, #c2410c); }   /* Orange */
+    .card-good { background: linear-gradient(135deg, #16a34a, #14532d); }  /* Green */
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+    if (Object.keys(firebaseConfig).length > 0) {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fetch only Pending tasks
+        const q = query(
+            collection(db, "artifacts", appId, "public", "data", "complaints"), 
+            where("status", "==", "Pending")
+        );
+
+        const container = document.getElementById('tasks-container');
+
+        onSnapshot(q, (snapshot) => {
+            container.innerHTML = "";
+            if (snapshot.empty) {
+                container.innerHTML = "<p class='text-gray-500 text-center w-full col-span-3'>No pending tasks. Good work!</p>";
+                return;
+            }
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                
+                // Set color based on AI Category
+                let bgClass = 'card-good';
+                if (data.category === 'Worst') bgClass = 'card-worst';
+                else if (data.category === 'Bad') bgClass = 'card-bad';
+
+                const card = document.createElement('div');
+                card.className = `${bgClass} p-6 rounded-xl shadow-lg text-white transform hover:scale-105 transition cursor-pointer`;
+                // Pass ID to survey page
+                card.onclick = () => window.location.href = `survey.html?id=${doc.id}`;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-white/20 px-2 py-1 rounded text-xs font-mono uppercase">AI: ${data.category}</span>
+                        <i data-lucide="alert-circle" class="w-6 h-6 opacity-75"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-1 truncate">${data.school}</h3>
+                    <p class="text-sm opacity-90 mb-4 h-10 overflow-hidden text-ellipsis">${data.ai_summary || data.description}</p>
+                    <div class="border-t border-white/20 pt-2 flex justify-between items-center text-sm font-bold">
+                        <span>Click to Verify</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        });
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-blue-900 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+        <div class="flex items-center"><i data-lucide="shield" class="mr-2"></i><span class="font-bold text-xl">Officer Portal</span></div>
+        <div class="space-x-4">
+            <a href="status1.html" class="text-sm hover:text-yellow-400">Public View</a>
+            <a href="index.html" class="text-sm hover:text-yellow-400">Logout</a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Pending Assignments</h1>
+        <p class="text-gray-600 mb-8">Tasks sorted by urgency based on AI analysis.</p>
+
+        <div id="tasks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-3 text-center py-10">
+                <i data-lucide="loader" class="animate-spin w-8 h-8 text-blue-600 mx-auto"></i>
+                <p class="text-gray-500 mt-2">Loading tasks...</p>
+            </div>
+        </div>
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

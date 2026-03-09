@@ -1,177 +1,173 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback & Transparency | Analytics</title>
-    
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Lucide Icons for aesthetics -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Load Chart.js for Charts and Graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', 'Hind Siliguri', sans-serif;
-            background-color: #f8fafc;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Infrastructure Monitoring</title>
 
-        .chart-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-    </style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  background: url('images/report-bg.jpg') no-repeat center center/cover;
+  background-attachment: fixed;
+}
+
+.overlay {
+  background: rgba(0,0,0,0.6);
+}
+</style>
+
 </head>
-<body onload="lucide.createIcons()">
+<body class="overlay min-h-screen text-white">
 
-    <!-- Navbar -->
-    <header class="bg-indigo-900 shadow-xl text-white p-4 sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-            <div class="logo flex items-center mb-4 md:mb-0">
-                <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
-                <h2 class="text-xl font-bold font-['Hind Siliguri']">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
-            </div>
-            <nav>
-                <ul class="flex space-x-4 md:space-x-8 text-sm md:text-base font-medium">
-                    <li><a href="index.html" class="hover:text-yellow-300 transition duration-150">मुखपृष्ठ</a></li>
-                    <li><a href="status.html" class="hover:text-yellow-300 transition duration-150">स्कूल स्थिति</a></li>
-                    <li><a href="report.html" class="hover:text-yellow-300 transition duration-150">रिपोर्ट</a></li>
-                    <li><a href="feedback.html" class="hover:text-yellow-300 transition duration-150 font-bold border-b-2 border-yellow-300">फीडबैक</a></li>
-                    <li><a href="team.html" class="hover:text-yellow-300 transition duration-150">टीम</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<!-- Navbar -->
+<header class="bg-indigo-900 p-4 shadow-lg">
+  <div class="container mx-auto flex justify-between items-center">
+    <h2 class="text-xl font-bold">विद्यालय अवसंरचना निगरानी प्रणाली</h2>
 
-    <!-- Analytics Section -->
-    <section class="max-w-7xl mx-auto p-6 md:p-10 my-10 bg-white rounded-xl shadow-2xl">
-        <h1 class="text-3xl font-bold text-indigo-700 mb-2 flex items-center">
-            <i data-lucide="trending-up" class="w-7 h-7 mr-3"></i>
-            सिस्टम पारदर्शिता और एनालिटिक्स
-        </h1>
-        <p class="text-gray-600 mb-10">कार्रवाई की स्थिति और शिकायतों की प्रकृति पर विस्तृत चार्ट और ग्राफ देखें।</p>
+    <nav>
+      <ul class="flex space-x-6">
+        <li><a href="#" class="hover:text-yellow-400">मुखपृष्ठ</a></li>
+        <li><a href="#" class="hover:text-yellow-400">लॉग इन</a></li>
+        <li><a href="#" class="hover:text-yellow-400">स्कूल स्थिति</a></li>
+        <li><a href="#" class="hover:text-yellow-400">रिपोर्ट</a></li>
+        <li><a href="#" class="hover:text-yellow-400">फीडबैक</a></li>
+        <li><a href="#" class="hover:text-yellow-400">टीम</a></li>
+      </ul>
+    </nav>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <!-- Chart 1: Complaint Distribution by Category -->
-            <div class="p-6 bg-gray-50 rounded-xl shadow-lg">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">शिकायत वितरण (आवश्यकतानुसार)</h2>
-                <div class="chart-container">
-                    <canvas id="complaintDistributionChart"></canvas>
-                </div>
-            </div>
+    <button onclick="toggleLang()" id="langBtn"
+      class="bg-yellow-400 text-indigo-900 px-3 py-1 rounded font-semibold">
+      EN
+    </button>
+  </div>
+</header>
 
-            <!-- Chart 2: Action Status (Government Response Time) -->
-            <div class="p-6 bg-gray-50 rounded-xl shadow-lg">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">कार्रवाई की स्थिति (सरकारी प्रतिक्रिया)</h2>
-                <div class="chart-container">
-                    <canvas id="actionStatusChart"></canvas>
-                </div>
-            </div>
-        </div>
+<!-- Main Section -->
+<section class="container mx-auto px-6 py-10">
 
-        <!-- System Metrics (Simulated Transparency Data) -->
-        <div class="mt-12">
-             <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">मुख्य प्रदर्शन संकेतक (KPI)</h2>
-             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div class="p-5 bg-indigo-50 rounded-lg shadow-md border-b-4 border-indigo-500">
-                    <p class="text-4xl font-bold text-indigo-700">1240</p>
-                    <p class="text-sm text-gray-600 mt-1">कुल सबमिट की गई शिकायतें</p>
-                </div>
-                <div class="p-5 bg-green-50 rounded-lg shadow-md border-b-4 border-green-500">
-                    <p class="text-4xl font-bold text-green-700">85%</p>
-                    <p class="text-sm text-gray-600 mt-1">सत्यापित/बंद किए गए मामले</p>
-                </div>
-                <div class="p-5 bg-yellow-50 rounded-lg shadow-md border-b-4 border-yellow-500">
-                    <p class="text-4xl font-bold text-yellow-700">7 दिन</p>
-                    <p class="text-sm text-gray-600 mt-1">औसत समाधान समय</p>
-                </div>
-             </div>
-        </div>
-    </section>
+  <h1 id="mainHeading" class="text-3xl font-bold mb-3">
+    📊 सिस्टम पारदर्शिता और एनालिटिक्स
+  </h1>
 
-    <!-- Footer -->
-    <footer class="p-8 text-center bg-gray-800 text-gray-300 mt-10">
-        <p class="text-sm">© 2025 Government of Uttar Pradesh | AI & IoT Monitoring Initiative</p>
-    </footer>
+  <p id="mainDesc" class="mb-10">
+    कार्रवाई की स्थिति और शिकायतों की प्रकृति पर विस्तृत चार्ट और ग्राफ देखें।
+  </p>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            lucide.createIcons();
-            renderComplaintDistributionChart();
-            renderActionStatusChart();
-        });
+  <!-- Charts -->
+  <div class="grid md:grid-cols-2 gap-8">
 
-        // Simulated data for Complaint Distribution
-        const complaintData = {
-            labels: ['Worst (तत्काल)', 'Bad (मध्यम)', 'Good (कम)'],
-            datasets: [{
-                label: 'शिकायतों की संख्या',
-                data: [450, 300, 490], // Simulated counts
-                backgroundColor: [
-                    'rgba(239, 68, 68, 0.7)', // Red for Worst
-                    'rgba(245, 158, 11, 0.7)', // Yellow/Orange for Bad
-                    'rgba(16, 185, 129, 0.7)', // Green for Good
-                ],
-                borderColor: [
-                    'rgba(239, 68, 68, 1)',
-                    'rgba(245, 158, 11, 1)',
-                    'rgba(16, 185, 129, 1)',
-                ],
-                borderWidth: 1
-            }]
-        };
+    <div class="bg-white text-black p-6 rounded-lg shadow-lg">
+      <h2 id="chart1Title" class="text-xl font-semibold mb-4">
+        शिकायत वितरण (आवश्यकतानुसार)
+      </h2>
+      <canvas id="complaintChart"></canvas>
+    </div>
 
-        function renderComplaintDistributionChart() {
-            const ctx = document.getElementById('complaintDistributionChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: complaintData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        }
+    <div class="bg-white text-black p-6 rounded-lg shadow-lg">
+      <h2 id="chart2Title" class="text-xl font-semibold mb-4">
+        कार्रवाई की स्थिति (सरकारी प्रतिक्रिया)
+      </h2>
+      <canvas id="statusChart"></canvas>
+    </div>
 
-        // Simulated data for Action Status
-        const actionStatusData = {
-            labels: ['कार्रवाई पूरी', 'प्रगति पर', 'सत्यापन लंबित'],
-            datasets: [{
-                label: 'कार्रवाई की स्थिति',
-                data: [65, 25, 10], // Simulated percentage
-                backgroundColor: [
-                    'rgba(22, 163, 74, 0.8)', // Green for Completed
-                    'rgba(59, 130, 246, 0.8)', // Blue for In Progress
-                    'rgba(107, 114, 128, 0.8)', // Gray for Pending
-                ],
-                hoverOffset: 4
-            }]
-        };
+  </div>
 
-        function renderActionStatusChart() {
-            const ctx = document.getElementById('actionStatusChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: actionStatusData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        title: { display: false }
-                    }
-                }
-            });
-        }
-    </script>
+  <!-- KPI Section -->
+  <div class="mt-10 bg-white text-black p-6 rounded-lg shadow-lg">
+    <h2 id="kpiTitle" class="text-xl font-semibold mb-4 border-b pb-2">
+      मुख्य प्रदर्शन संकेतक (KPI)
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-6 text-center">
+      <div>
+        <h3 class="text-2xl font-bold text-indigo-600">150+</h3>
+        <p>कुल शिकायतें</p>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-green-600">120+</h3>
+        <p>समाधान की गई</p>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-red-600">30+</h3>
+        <p>लंबित मामले</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+
+let currentLang = "hi";
+
+const translations = {
+  en: {
+    title: "School Infrastructure Monitoring System",
+    heading: "System Transparency & Analytics",
+    desc: "View detailed charts and graphs about complaint types and action status.",
+    chart1: "Complaint Distribution (Priority Based)",
+    chart2: "Action Status (Government Response)",
+    kpi: "Key Performance Indicators (KPI)",
+    nav: ["Home","Login","School Status","Report","Feedback","Team"]
+  },
+  hi: {
+    title: "विद्यालय अवसंरचना निगरानी प्रणाली",
+    heading: "सिस्टम पारदर्शिता और एनालिटिक्स",
+    desc: "कार्रवाई की स्थिति और शिकायतों की प्रकृति पर विस्तृत चार्ट और ग्राफ देखें।",
+    chart1: "शिकायत वितरण (आवश्यकतानुसार)",
+    chart2: "कार्रवाई की स्थिति (सरकारी प्रतिक्रिया)",
+    kpi: "मुख्य प्रदर्शन संकेतक (KPI)",
+    nav: ["मुखपृष्ठ","लॉग इन","स्कूल स्थिति","रिपोर्ट","फीडबैक","टीम"]
+  }
+};
+
+function toggleLang(){
+  currentLang = currentLang === "hi" ? "en" : "hi";
+  const t = translations[currentLang];
+
+  document.querySelector("header h2").innerText = t.title;
+  document.getElementById("mainHeading").innerText = "📊 " + t.heading;
+  document.getElementById("mainDesc").innerText = t.desc;
+  document.getElementById("chart1Title").innerText = t.chart1;
+  document.getElementById("chart2Title").innerText = t.chart2;
+  document.getElementById("kpiTitle").innerText = t.kpi;
+
+  document.querySelectorAll("nav ul li a").forEach((a,i)=>{
+    a.innerText = t.nav[i];
+  });
+
+  document.getElementById("langBtn").innerText = currentLang === "hi" ? "EN" : "HI";
+}
+
+/* Charts */
+
+new Chart(document.getElementById("complaintChart"), {
+  type: "pie",
+  data: {
+    labels: ["High","Medium","Low"],
+    datasets: [{
+      data: [40, 35, 25],
+      backgroundColor: ["#ef4444","#f59e0b","#10b981"]
+    }]
+  }
+});
+
+new Chart(document.getElementById("statusChart"), {
+  type: "bar",
+  data: {
+    labels: ["Resolved","Pending","In Progress"],
+    datasets: [{
+      label: "Cases",
+      data: [120, 30, 20],
+      backgroundColor: ["#22c55e","#ef4444","#3b82f6"]
+    }]
+  }
+});
+
+</script>
+
 </body>
 </html>

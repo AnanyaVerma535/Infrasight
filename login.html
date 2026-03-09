@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfraSight Role Selection Login</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration for original dark blue color -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Original dark blue color from the initial CSS
+                        'custom-navy': '#1e3a8a', 
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Load Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Custom styles for Inter font (default Latin) and Hind Siliguri (Hindi) */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hindi-font {
+            /* Fallback font for the specific Hindi text requested */
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+        }
+
+        /* --- Navbar Custom Styles (Used for layout/links/buttons, not wrapper) --- */
+        
+        /* Logo grouping */
+        .logo {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-right: 1rem;
+        }
+        
+        /* Right side alignment and flexibility */
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+        
+        /* Navigation Links (Hidden on mobile by default) */
+        #nav-links {
+            display: none; 
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            color: white; /* Ensure text color remains white */
+        }
+        
+        /* Navigation wrapper behavior */
+        .navbar-right nav {
+            display: contents;
+        }
+        
+        /* Language Toggle Button styling */
+        .lang-btn {
+            padding: 0.5rem 0.75rem;
+            background-color: white; 
+            color: #1e3a8a; 
+            font-weight: 600;
+            border-radius: 0.5rem;
+            margin-left: 1rem;
+            transition: background-color 0.2s;
+        }
+        .lang-btn:hover {
+            background-color: #e5e7eb; 
+            color: #1e3a8a;
+        }
+
+        /* Desktop view (md: breakpoint and above) */
+        @media (min-width: 768px) {
+            #nav-links {
+                display: flex;
+                gap: 1.5rem;
+            }
+            #nav-links li a {
+                color: white; 
+                font-weight: 500;
+                transition: color 0.2s;
+            }
+            #nav-links li a:hover {
+                color: #93c5fd; 
+            }
+        }
+
+        /* Utility classes for the main content card */
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .input-focus:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<!-- Removed p-4 and items-center from body to allow header to stretch -->
+<body class="bg-gray-100 min-h-screen flex flex-col" onload="lucide.createIcons()">
+
+    <!-- FULL-WIDTH HEADER START -->
+    <header class="w-full bg-custom-navy shadow-lg text-white">
+        <!-- Inner container to align header content with the rest of the application -->
+        <div class="max-w-5xl mx-auto flex justify-between items-center px-4 py-4">
+            <div class="logo">
+                <i data-lucide="school" class="w-8 h-8 mr-3 text-yellow-300"></i>
+                <!-- Title text with data-key for translation -->
+                <h2 class="text-xl font-bold text-white hindi-font" data-key="app-title">
+                    इन्फ्रासाइट-विद्यालय अवसंरचना निगरानी प्रणाली
+                </h2>
+            </div>
+        
+            <div class="navbar-right">
+                <nav>
+                    <ul id="nav-links">
+                        <li><a href="index.html" class="hover:text-blue-300 transition" data-key="nav-home">मुखपृष्ठ</a></li>
+                        <li><a href="login.html" class="hover:text-blue-300 transition" data-key="nav-login">लॉग इन</a></li>
+                        <li><a href="status.html" class="hover:text-blue-300 transition" data-key="nav-status">स्कूल स्थिति</a></li>
+                        <li><a href="report.html" class="hover:text-blue-300 transition" data-key="nav-report">रिपोर्ट</a></li>
+                        <li><a href="contact.html" class="hover:text-blue-300 transition" data-key="nav-contact">संपर्क करें</a></li>
+                        <li><a href="team.html" class="hover:text-blue-300 transition" data-key="nav-team">टीम</a></li>
+                    </ul>
+                </nav>
+                <!-- Language Toggle Button (Shows the language it will switch TO) -->
+                <button class="lang-btn" onclick="toggleLang()" id="lang-toggle-btn">EN</button>
+            </div>
+        </div>
+    </header>
+    <!-- FULL-WIDTH HEADER END -->
+    
+    <!-- Main Content Wrapper: Now handles centering and top margin below the header -->
+    <div id="app-container" class="w-full max-w-5xl mx-auto px-4 pt-8 pb-8 flex-grow flex justify-center">
+        
+        <!-- Main Content Area -->
+        <div class="w-full max-w-lg">
+            
+            <!-- Notification Area -->
+            <div id="notification-message" class="hidden p-4 mb-4 rounded-lg font-semibold shadow-md hindi-font"></div>
+
+            <!-- 1. LOGIN FORM (Initial View) -->
+            <div id="login-view" class="card bg-white p-8 rounded-xl shadow-2xl border-t-8 border-indigo-600">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 hindi-font" data-key="login-heading">अपनी भूमिका चुनें</h2>
+                
+                <form id="login-form" class="space-y-6">
+                    
+                    <!-- Username Input -->
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2 hindi-font" data-key="login-label-id">उपयोगकर्ता नाम / आईडी</label>
+                        <input type="text" id="username" name="username" required 
+                                data-key-placeholder="login-placeholder-id"
+                                placeholder="अपनी विशिष्ट आईडी दर्ज करें"
+                                class="w-full p-3 border border-gray-300 rounded-lg input-focus transition duration-150">
+                    </div>
+
+                    <!-- Role Selection Buttons -->
+                    <div>
+                        <span class="block text-sm font-medium text-gray-700 mb-2 hindi-font" data-key="login-label-role">मैं हूँ एक...</span>
+                        <div class="flex space-x-4">
+                            
+                            <!-- Citizen Role Button -->
+                            <input type="radio" id="role-citizen" name="role" value="Citizen" class="hidden" required>
+                            <label for="role-citizen" class="flex-1 text-center py-3 px-4 rounded-xl border-2 border-green-500 text-green-700 font-semibold cursor-pointer transition duration-200 hover:bg-green-50 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 hindi-font" data-key="role-citizen">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H9a1 1 0 01-1-1v-1a6 6 0 016-6h.047a6 6 0 016 6v1a1 1 0 01-1 1z" /></svg>
+                                <span class="block text-sm">नागरिक</span>
+                            </label>
+                            
+                            <!-- Officer Role Button -->
+                            <input type="radio" id="role-officer" name="role" value="Officer" class="hidden">
+                            <label for="role-officer" class="flex-1 text-center py-3 px-4 rounded-xl border-2 border-indigo-600 text-indigo-700 font-semibold cursor-pointer transition duration-200 hover:bg-indigo-50 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-300 hindi-font" data-key="role-officer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                <span class="block text-sm">अधिकारी</span>
+                            </label>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full py-3 px-4 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition duration-150 shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-500 active:scale-95 hindi-font" data-key="login-button">
+                        डैशबोर्ड पर जारी रखें
+                    </button>
+                </form>
+            </div>
+
+            <!-- 2. CITIZEN DASHBOARD (Hidden by default) -->
+            <div id="citizen-dashboard" class="hidden card bg-white p-8 rounded-xl shadow-2xl border-t-8 border-green-600 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2 hindi-font" data-key="citizen-title"><span class="text-green-600" id="citizen-name-display"></span> स्वागत है, नागरिक</h2>
+                <p class="text-gray-600 mb-6 hindi-font" data-key="citizen-tagline">सार्वजनिक बुनियादी ढांचे की जवाबदेही बनाए रखने में हमारी मदद करने के लिए धन्यवाद।</p>
+                
+                <p class="mb-6 border-l-4 border-green-300 bg-green-50 p-3 italic text-sm text-gray-700 mx-auto max-w-sm hindi-font" data-key="citizen-role-desc">
+                    एक नागरिक के रूप में, आपकी प्राथमिक भूमिका नई रिपोर्ट जमा करना और उनके समाधान की स्थिति को ट्रैक करना है।
+                </p>
+
+                <button onclick="logout()" class="w-full py-3 px-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition duration-150 shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 hindi-font" data-key="citizen-button">
+                    एक नई सुविधा रिपोर्ट जमा करें
+                </button>
+                <a href="#" onclick="logout()" class="mt-4 block text-sm text-gray-500 hover:text-gray-700 hindi-font" data-key="logout-link">लॉग आउट</a>
+            </div>
+
+            <!-- 3. OFFICER DASHBOARD (Hidden by default) -->
+            <div id="officer-dashboard" class="hidden card bg-white p-8 rounded-xl shadow-2xl border-t-8 border-indigo-600 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-600 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707l-.707-.707V8a6 6 0 00-6-6zM14 18H6a1 1 0 000 2h8a1 1 0 000-2z" /></svg>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2 hindi-font" data-key="officer-title"><span class="text-indigo-600" id="officer-name-display"></span> स्वागत है, अधिकारी</h2>
+                <p class="text-gray-600 mb-6 hindi-font" data-key="officer-tagline">आपकी कार्रवाई समय पर मरम्मत और संसाधन आवंटन सुनिश्चित करती है।</p>
+                
+                <p class="mb-6 border-l-4 border-indigo-300 bg-indigo-50 p-3 italic text-sm text-gray-700 mx-auto max-w-sm hindi-font" data-key="officer-role-desc">
+                    एक अधिकारी के रूप में, आपका ध्यान रिपोर्टों को सत्यापित करने, स्थितियों को अद्यतन करने और कार्यों को सौंपने पर है।
+                </p>
+
+                <button onclick="logout()" class="w-full py-3 px-4 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition duration-150 shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-300 hindi-font" data-key="officer-button">
+                    लंबित मामलों की समीक्षा करें<span data-key="pending-count"> (34)</span>
+                </button>
+                <a href="#" onclick="logout()" class="mt-4 block text-sm text-gray-500 hover:text-gray-700 hindi-font" data-key="logout-link">लॉग आउट</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const loginView = document.getElementById('login-view');
+        const citizenDashboard = document.getElementById('citizen-dashboard');
+        const officerDashboard = document.getElementById('officer-dashboard');
+        const notificationMessage = document.getElementById('notification-message');
+        const langToggleBtn = document.getElementById('lang-toggle-btn');
+        
+        let currentLang = 'HI'; // Initial language
+
+        // --- Translation Data ---
+        const translations = {
+            'app-title': {
+                'HI': 'इन्फ्रासाइट-विद्यालय अवसंरचना निगरानी प्रणाली',
+                'EN': 'InfraSight-School Infrastructure Monitoring System'
+            },
+            'nav-home': { 'HI': 'मुखपृष्ठ', 'EN': 'Home' },
+            'nav-login': { 'HI': 'लॉग इन', 'EN': 'Log In' },
+            'nav-status': { 'HI': 'स्कूल स्थिति', 'EN': 'School Status' },
+            'nav-report': { 'HI': 'रिपोर्ट', 'EN': 'Report' },
+            'nav-contact': { 'HI': 'संपर्क करें', 'EN': 'Contact' },
+            'nav-team': { 'HI': 'टीम', 'EN': 'Team' },
+            'login-heading': { 'HI': 'अपनी भूमिका चुनें', 'EN': 'Select Your Role' },
+            'login-label-id': { 'HI': 'उपयोगकर्ता नाम / आईडी', 'EN': 'Username / ID' },
+            'login-placeholder-id': { 'HI': 'अपनी विशिष्ट आईडी दर्ज करें', 'EN': 'Enter your unique ID' },
+            'login-label-role': { 'HI': 'मैं हूँ एक...', 'EN': 'I am a...' },
+            'role-citizen': { 'HI': 'नागरिक', 'EN': 'Citizen' },
+            'role-officer': { 'HI': 'अधिकारी', 'EN': 'Officer' },
+            'login-button': { 'HI': 'डैशबोर्ड पर जारी रखें', 'EN': 'Continue to Dashboard' },
+            'citizen-title': { 'HI': 'स्वागत है, नागरिक', 'EN': 'Welcome, Citizen' },
+            'citizen-tagline': { 'HI': 'सार्वजनिक बुनियादी ढांचे की जवाबदेही बनाए रखने में हमारी मदद करने के लिए धन्यवाद।', 'EN': 'Thank you for helping us maintain public infrastructure accountability.' },
+            'citizen-role-desc': { 'HI': 'एक नागरिक के रूप में, आपकी प्राथमिक भूमिका <strong>नई रिपोर्ट जमा करना</strong> और उनके समाधान की स्थिति को ट्रैक करना है।', 'EN': 'As a Citizen, your primary role is to <strong>submit new reports</strong> and track their resolution status.' },
+            'citizen-button': { 'HI': 'एक नई सुविधा रिपोर्ट जमा करें', 'EN': 'Submit a New Facility Report' },
+            'officer-title': { 'HI': 'स्वागत है, अधिकारी', 'EN': 'Welcome, Officer' },
+            'officer-tagline': { 'HI': 'आपकी कार्रवाई समय पर मरम्मत और संसाधन आवंटन सुनिश्चित करती है।', 'EN': 'Your action ensures the timely repair and allocation of resources.' },
+            'officer-role-desc': { 'HI': 'एक अधिकारी के रूप में, आपका ध्यान <strong>रिपोर्टों को सत्यापित करने</strong>, स्थितियों को अद्यतन करने और कार्यों को सौंपने पर है।', 'EN': 'As an Officer, your focus is on <strong>verifying reports</strong>, updating statuses, and delegating tasks.' },
+            'officer-button': { 'HI': 'लंबित मामलों की समीक्षा करें', 'EN': 'Review Pending Cases' },
+            'pending-count': { 'HI': ' (34)', 'EN': ' (34)' },
+            'logout-link': { 'HI': 'लॉग आउट', 'EN': 'Logout' },
+            'notification-id-error': { 'HI': 'कृपया एक उपयोगकर्ता नाम या आईडी दर्ज करें।', 'EN': 'Please enter a Username or ID.' },
+            'notification-role-error': { 'HI': 'कृपया एक भूमिका चुनें (नागरिक या अधिकारी)।', 'EN': 'Please select a role (Citizen or Officer).' },
+            'notification-logout-success': { 'HI': 'आप सफलतापूर्वक लॉग आउट हो गए हैं।', 'EN': 'You have been logged out successfully.' },
+            'notification-lang-en': { 'HI': 'भाषा संदर्भ अंग्रेजी में बदल दिया गया।', 'EN': 'Switched language context to English.' },
+            'notification-lang-hi': { 'HI': 'भाषा संदर्भ हिंदी में बदल दिया गया।', 'EN': 'Switched language context to Hindi.' },
+            'login-success': { 'HI': 'लॉगिन सफल!', 'EN': 'Login successful!' },
+            'welcome': { 'HI': 'स्वागत है,', 'EN': 'Welcome, ' }
+        };
+        // --- End Translation Data ---
+
+        /**
+         * Applies translations to all elements with a data-key attribute.
+         * @param {string} lang - The target language code ('HI' or 'EN').
+         */
+        function applyTranslations(lang) {
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[key] && translations[key][lang]) {
+                    // Use innerHTML to allow for bold tags in role descriptions
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+
+            document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-key-placeholder');
+                 if (translations[key] && translations[key][lang]) {
+                    element.setAttribute('placeholder', translations[key][lang]);
+                }
+            });
+            
+            // Update Lang Button Text (shows the language it will switch TO)
+            langToggleBtn.textContent = lang === 'HI' ? 'EN' : 'HI';
+
+            // Set the HTML lang attribute
+            document.documentElement.setAttribute('lang', lang.toLowerCase());
+
+            // Update user name displays if they are logged in
+            updateUserDisplayNames(lang);
+        }
+        
+        /**
+         * Updates the Welcome/Username display based on the current language.
+         */
+        function updateUserDisplayNames(lang) {
+            const citizenNameDisplay = document.getElementById('citizen-name-display');
+            const officerNameDisplay = document.getElementById('officer-name-display');
+            const welcomeText = translations['welcome'][lang];
+            
+            // Find the current username
+            const username = citizenNameDisplay.dataset.username || officerNameDisplay.dataset.username || '';
+            
+            if (username) {
+                const isCitizenActive = citizenDashboard.classList.contains('hidden') === false;
+                const activeTitleElement = isCitizenActive ? document.querySelector('[data-key="citizen-title"]') : document.querySelector('[data-key="officer-title"]');
+                const nameColorClass = isCitizenActive ? 'text-green-600' : 'text-indigo-600';
+                
+                // Construct the title dynamically
+                if (activeTitleElement) {
+                     // Check for trailing space in 'welcome' to avoid double spacing
+                    const welcomeFormat = welcomeText.trim().endsWith(',') ? `${welcomeText}` : `${welcomeText} `;
+                    activeTitleElement.innerHTML = `<span class="${nameColorClass}">${username}</span> ${welcomeFormat} ${isCitizenActive ? translations['citizen-title'][lang].split(',')[1].trim() : translations['officer-title'][lang].split(',')[1].trim()}`;
+                }
+            }
+        }
+
+
+        /**
+         * Toggles the language of the entire application.
+         */
+        window.toggleLang = function() {
+            const newLang = currentLang === 'HI' ? 'EN' : 'HI';
+            currentLang = newLang;
+            
+            applyTranslations(currentLang);
+
+            const notifKey = currentLang === 'EN' ? 'notification-lang-en' : 'notification-lang-hi';
+            showNotification(translations[notifKey][currentLang], 'success');
+        };
+
+        /**
+         * Shows a temporary, styled notification message.
+         * @param {string} message - The text content.
+         * @param {string} type - 'success' or 'error'.
+         */
+        function showNotification(message, type) {
+            notificationMessage.textContent = message;
+            notificationMessage.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            
+            if (type === 'success') {
+                notificationMessage.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                notificationMessage.classList.add('bg-red-100', 'text-red-800');
+            }
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notificationMessage.classList.add('hidden');
+            }, 3000);
+        }
+
+        /**
+         * Handles the login form submission.
+         */
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const selectedRole = document.querySelector('input[name="role"]:checked');
+            
+            // Simple validation
+            if (username === '') {
+                showNotification(translations['notification-id-error'][currentLang], 'error');
+                return;
+            }
+            
+            if (!selectedRole) {
+                showNotification(translations['notification-role-error'][currentLang], 'error');
+                return;
+            }
+            
+            const role = selectedRole.value;
+            
+            // --- Simulate Successful Login ---
+            
+            // Hide the login form
+            loginView.classList.add('hidden');
+            
+            // Save username to data attribute for display update
+            const nameDisplayElement = role === 'Citizen' ? document.getElementById('citizen-name-display') : document.getElementById('officer-name-display');
+            nameDisplayElement.dataset.username = username;
+            
+            // Show the appropriate dashboard
+            if (role === 'Citizen') {
+                officerDashboard.classList.add('hidden');
+                citizenDashboard.classList.remove('hidden');
+            } else if (role === 'Officer') {
+                citizenDashboard.classList.add('hidden');
+                officerDashboard.classList.remove('hidden');
+            }
+
+            // Update dashboard titles with username and current language
+            updateUserDisplayNames(currentLang);
+            
+            const successMessage = `${translations['login-success'][currentLang]} ${translations['welcome'][currentLang]} ${username}!`;
+            showNotification(successMessage, 'success');
+        });
+
+        /**
+         * Resets the application state to show the login form.
+         */
+        window.logout = function() {
+            // Clear inputs and show login form
+            loginForm.reset();
+            loginView.classList.remove('hidden');
+            
+            // Hide all dashboards
+            citizenDashboard.classList.add('hidden');
+            officerDashboard.classList.add('hidden');
+            
+            // Clear saved username
+            document.getElementById('citizen-name-display').dataset.username = '';
+            document.getElementById('officer-name-display').dataset.username = '';
+
+            showNotification(translations['notification-logout-success'][currentLang], 'success');
+        };
+
+        // Initialize by ensuring the correct language is set on load
+        window.onload = function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            citizenDashboard.classList.add('hidden');
+            officerDashboard.classList.add('hidden');
+            
+            // Apply initial language settings (HI)
+            applyTranslations(currentLang);
+        };
+
+    </script>
+</body>
+</html>
